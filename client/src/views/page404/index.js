@@ -1,9 +1,12 @@
 import React from 'react'
+import './page404.css'
 
 class Page404 extends React.Component {
     render() {
         return(
-            <span>page 404</span>
+            <div className={"background-404"}>
+                <div className={"text-404"}>404: Strona nie istnieje</div>
+            </div>
         );
     }
 }
