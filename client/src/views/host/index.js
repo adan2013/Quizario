@@ -2,14 +2,15 @@ import React from 'react'
 import {setHostingRoomAC, switchStateAC} from "../../actions/game";
 import {connect} from "react-redux";
 import socketIOClient from "socket.io-client";
-import {closeRoom, createNewRoom, roomCreated, server} from "../../connection/config";
+import {closeRoom, createNewRoom, roomCreated, userCountUpdate, server} from "../../connection/config";
 import {Button, Form} from "react-bootstrap";
 
 class Host extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            title: ''
+            title: '',
+            connectedUsers: 0
         }
     }
 
@@ -21,6 +22,10 @@ class Host extends React.Component {
         this.socket.on(roomCreated, (code) => {
             this.props.setHostingRoom({...this.props.game.hostingRoom, roomCode: code});
             this.props.switchState('WAITING_FOR_START');
+        });
+
+        this.socket.on(userCountUpdate, (count) => {
+            this.setState({connectedUsers: count})
         });
     }
 
@@ -69,6 +74,7 @@ class Host extends React.Component {
                     <div>
                         title: {this.props.game.hostingRoom.title}<br/>
                         przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/>
+                        Ilość podłączonych graczy: {this.state.connectedUsers}<br/>
                         Pokój utworzony. Oczekiwanie na graczy...<br/>
                         <Button color={"primary"} onClick={() => {
                             this.socket.emit(closeRoom, this.props.game.hostingRoom.roomCode);

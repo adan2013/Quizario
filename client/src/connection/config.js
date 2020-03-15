@@ -4,6 +4,8 @@ export const createNewRoom = 'CREATE_NEW_ROOW';
 export const roomCreated = 'ROOM_CREATED';
 export const closeRoom = 'CLOSE_ROOM';
 
+export const userCountUpdate = 'USER_COUNT_UPDATE';
+
 export const addToRoom = 'ADD_TO_ROOM';
 export const joinedToRoom = 'JOINED_TO_ROOM';
 export const roomNotFound = 'ROOM_NOT_FOUND';

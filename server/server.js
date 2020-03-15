@@ -11,6 +11,8 @@ const createNewRoom = 'CREATE_NEW_ROOW';
 const roomCreated = 'ROOM_CREATED';
 const closeRoom = 'CLOSE_ROOM';
 
+const userCountUpdate = 'USER_COUNT_UPDATE';
+
 const addToRoom = 'ADD_TO_ROOM';
 const joinedToRoom = 'JOINED_TO_ROOM';
 const roomNotFound = 'ROOM_NOT_FOUND';
@@ -18,7 +20,8 @@ const roomNotFound = 'ROOM_NOT_FOUND';
 const createdRooms = [
     {
         roomCode: '111111',
-        title: 'quiz testowy'
+        title: 'quiz testowy',
+        hostSocketId: null
     }
 ];
 
@@ -26,6 +29,14 @@ const getRoomObject = (roomCode) => {
    return createdRooms.find(room => {
        return room.roomCode.toString() === roomCode.toString();
    });
+};
+
+const getHostSocket = (roomCode) => {
+    const room = getRoomObject(roomCode);
+    if(room && room.hostSocketId) {
+        return io.sockets.sockets[room.hostSocketId];
+    }
+    return null;
 };
 
 const getRandomInt = (min, max) => {
@@ -46,8 +57,9 @@ io.on('connection', socket => {
         }
         code = code.toString();
         createdRooms.push({
-           roomCode: code,
-           title: data.title
+            roomCode: code,
+            title: data.title,
+            hostSocketId: socket.id
         });
         socket.join(code);
         socket.emit(roomCreated, code);
@@ -71,7 +83,9 @@ io.on('connection', socket => {
             socket.nickname = playerName;
             socket.join(roomCode);
             socket.emit(joinedToRoom, getRoomObject(roomCode));
-            console.log(socket.id + ' > user joined to room ' + roomCode + ' with nickname ' + socket.nickname + ' (players in room: ' + io.sockets.adapter.rooms[roomCode].length + ')');
+            const userCount = io.sockets.adapter.rooms[roomCode].length - 1;
+            getHostSocket(roomCode).emit(userCountUpdate, userCount);
+            console.log(socket.id + ' > user joined to room ' + roomCode + ' with nickname ' + socket.nickname + ' (players in room: ' + userCount + ')');
         }else{
             socket.emit(roomNotFound);
             console.log(socket.id + ' > room with code ' + roomCode + ' not found!');
