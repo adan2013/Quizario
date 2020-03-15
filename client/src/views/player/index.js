@@ -3,6 +3,7 @@ import socketIOClient from 'socket.io-client'
 import {server, addToRoom, roomNotFound, joinedToRoom} from '../../connection/config'
 import {setHostingRoomAC, switchStateAC} from "../../actions/game";
 import {connect} from "react-redux";
+import {Button} from "react-bootstrap";
 
 class Player extends React.Component {
 
@@ -30,7 +31,7 @@ class Player extends React.Component {
     }
 
     componentWillUnmount() {
-        this.socket.disconnect();
+        if(this.socket) this.socket.disconnect();
     }
 
     render() {
@@ -40,7 +41,8 @@ class Player extends React.Component {
                     <div>
                         room code: {this.props.game.roomCode}<br/>
                         nick: {this.props.game.playerName}<br/>
-                        łączenie z pokojem...
+                        łączenie z pokojem...<br/>
+                        <Button color={"primary"} onClick={() => this.props.history.push('/')}>Anuluj</Button>
                     </div>
                 );
             case 'ROOM_NOT_FOUND':
@@ -48,7 +50,8 @@ class Player extends React.Component {
                     <div>
                         room code: {this.props.game.roomCode}<br/>
                         nick: {this.props.game.playerName}<br/>
-                        POKÓJ NIE ISTNIEJE!
+                        POKÓJ NIE ISTNIEJE!<br/>
+                        <Button color={"primary"} onClick={() => this.props.history.push('/')}>Powrót do menu</Button>
                     </div>
                 );
             case 'WAITING':
@@ -57,7 +60,8 @@ class Player extends React.Component {
                         room code: {this.props.game.roomCode}<br/>
                         nick: {this.props.game.playerName}<br/>
                         title: {this.props.game.hostingRoom.title}<br/>
-                        Dołączono. Obserwuj komunikaty na ekranie hosta...
+                        Dołączono. Obserwuj komunikaty na ekranie hosta...<br/>
+                        <Button color={"primary"} onClick={() => this.props.history.push('/')}>Wyjdź z gry</Button>
                     </div>
                 );
             default:

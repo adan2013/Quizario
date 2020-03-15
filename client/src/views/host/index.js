@@ -2,7 +2,7 @@ import React from 'react'
 import {setHostingRoomAC, switchStateAC} from "../../actions/game";
 import {connect} from "react-redux";
 import socketIOClient from "socket.io-client";
-import {createNewRoom, roomCreated, server} from "../../connection/config";
+import {closeRoom, createNewRoom, roomCreated, server} from "../../connection/config";
 import {Button, Form} from "react-bootstrap";
 
 class Host extends React.Component {
@@ -52,6 +52,7 @@ class Host extends React.Component {
                             <Button type={"submit"} color={"primary"} onClick={this.createRoom} disabled={this.state.title === ''}>
                                 Utwórz pokój
                             </Button>
+                            <Button color={"primary"} onClick={() => this.props.history.push('/')}>Powrót do menu</Button>
                         </form>
                     </div>
                 );
@@ -59,7 +60,8 @@ class Host extends React.Component {
                 return(
                     <div>
                         title: {this.props.game.title}<br/>
-                        Oczekiwanie na wygenerowanie kodu...
+                        Oczekiwanie na wygenerowanie kodu...<br/>
+                        <Button color={"primary"} onClick={() => this.props.history.push('/')}>Anuluj</Button>
                     </div>
                 );
             case 'WAITING_FOR_START':
@@ -67,7 +69,11 @@ class Host extends React.Component {
                     <div>
                         title: {this.props.game.hostingRoom.title}<br/>
                         przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/>
-                        Pokój utworzony. Oczekiwanie na graczy...
+                        Pokój utworzony. Oczekiwanie na graczy...<br/>
+                        <Button color={"primary"} onClick={() => {
+                            this.socket.emit(closeRoom, this.props.game.hostingRoom.roomCode);
+                            this.props.history.push('/')
+                        }}>Anuluj grę</Button>
                     </div>
                 );
             default:

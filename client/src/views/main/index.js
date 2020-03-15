@@ -44,7 +44,7 @@ class Main extends React.Component {
                                   onChange={(e) => this.setState({roomCode: e.target.value})}
                                   placeholder={"Kod dostępu"}
                                   maxLength={"6"}/>
-                    <Button type={"submit"} color={"primary"} onClick={this.startGame} disabled={this.state.roomCode.length !== 6}>
+                    <Button type={"submit"} color={"primary"} onClick={this.startGame} disabled={this.state.roomCode.length !== 6 && this.state.playerName === ''}>
                         Dołącz do gry
                     </Button>
                 </form>

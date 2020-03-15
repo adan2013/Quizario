@@ -9,6 +9,7 @@ const io = socketIO(server);
 
 const createNewRoom = 'CREATE_NEW_ROOW';
 const roomCreated = 'ROOM_CREATED';
+const closeRoom = 'CLOSE_ROOM';
 
 const addToRoom = 'ADD_TO_ROOM';
 const joinedToRoom = 'JOINED_TO_ROOM';
@@ -51,6 +52,17 @@ io.on('connection', socket => {
         socket.join(code);
         socket.emit(roomCreated, code);
         console.log(socket.id + ' > user created a new room with code ' + code + ' and title "' + data.title + '" (active rooms: ' + createdRooms.length + ')');
+    });
+
+    //CLOSING ROOM BY HOST
+    socket.on(closeRoom, (code) => {
+        const i = createdRooms.findIndex(room => {
+            return room.roomCode.toString() === code.toString();
+        });
+        if(i > -1) {
+            createdRooms.splice(i, 1);
+            console.log(socket.id + ' > user closed the room with code ' + code + ' (active rooms: ' + createdRooms.length + ')');
+        }
     });
 
     //ADDING NEW USER TO THE ROOM
