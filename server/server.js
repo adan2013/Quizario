@@ -48,7 +48,7 @@ const getRandomInt = (min, max) => {
 io.on('connection', socket => {
     console.log(socket.id + ' > user connected');
 
-    //CREATING NEW ROOM BY HOST
+    //CREATING A NEW ROOM BY HOST
     socket.on(createNewRoom, (data) => {
         let code = 0;
         while(true) {
@@ -57,8 +57,8 @@ io.on('connection', socket => {
         }
         code = code.toString();
         createdRooms.push({
+            ...data,
             roomCode: code,
-            title: data.title,
             hostSocketId: socket.id
         });
         socket.join(code);

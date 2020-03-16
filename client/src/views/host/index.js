@@ -10,6 +10,9 @@ class Host extends React.Component {
         super(props);
         this.state = {
             title: '',
+            timeLimit: '0',
+            questionLimit: '0',
+            randomOrder: false,
             connectedUsers: 0
         }
     }
@@ -34,13 +37,15 @@ class Host extends React.Component {
     }
 
     createRoom = () => {
-        this.props.setHostingRoom({
-            title: this.state.title
-        });
+        const data = {
+            title: this.state.title,
+            timeLimit: this.state.timeLimit,
+            questionLimit: this.state.questionLimit,
+            randomOrder: this.state.randomOrder
+        };
+        this.props.setHostingRoom(data);
         this.props.switchState('WAITING_FOR_CODE');
-        this.socket.emit(createNewRoom, {
-           title: this.state.title
-        });
+        this.socket.emit(createNewRoom, data);
     };
 
     render() {
@@ -49,11 +54,26 @@ class Host extends React.Component {
                 return(
                     <div>
                         <form>
+                            <div>Tytuł quizu:</div>
                             <Form.Control type={"text"}
                                           value={this.state.title}
                                           onChange={(e) => this.setState({title: e.target.value})}
-                                          placeholder={"Tytuł quizu"}
                                           maxLength={"30"}/>
+                            <div>Limit czasu: (0-wyłączone)</div>
+                            <Form.Control type={"text"}
+                                          value={this.state.timeLimit}
+                                          onChange={(e) => this.setState({timeLimit: e.target.value})}
+                                          maxLength={"3"}/>
+                            <div>Limit ilości pytań: (0-wyłączone)</div>
+                            <Form.Control type={"text"}
+                                          value={this.state.questionLimit}
+                                          onChange={(e) => this.setState({questionLimit: e.target.value})}
+                                          maxLength={"3"}/>
+                            <div>Losowa kolejność:</div>
+                            <Form.Control type={"checkbox"}
+                                          checked={this.state.randomOrder}
+                                          onChange={(e) => this.setState({randomOrder: e.target.checked})}
+                                          maxLength={"3"}/>
                             <Button type={"submit"} color={"primary"} onClick={this.createRoom} disabled={this.state.title === ''}>
                                 Utwórz pokój
                             </Button>
