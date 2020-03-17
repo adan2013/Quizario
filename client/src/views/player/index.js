@@ -1,6 +1,6 @@
 import React from 'react'
 import socketIOClient from 'socket.io-client'
-import {server, addToRoom, roomNotFound, joinedToRoom} from '../../connection/config'
+import {server, addToRoom, roomNotFound, nicknameIsBusy, joinedToRoom} from '../../connection/config'
 import {setHostingRoomAC, switchStateAC} from "../../actions/game";
 import {connect} from "react-redux";
 import {Button} from "react-bootstrap";
@@ -12,8 +12,12 @@ class Player extends React.Component {
         if(this.props.game.roomCode && this.props.game.playerName) {
             this.socket = socketIOClient(server);
 
-            this.socket.on('connect', data => {
+            this.socket.on('connect', () => {
                 this.socket.emit(addToRoom, this.props.game.roomCode, this.props.game.playerName);
+            });
+
+            this.socket.on(nicknameIsBusy, () => {
+                this.props.switchState('NICKNAME_IS_BUSY');
             });
 
             this.socket.on(roomNotFound, () => {
@@ -45,12 +49,21 @@ class Player extends React.Component {
                         <Button color={"primary"} onClick={() => this.props.history.push('/')}>Anuluj</Button>
                     </div>
                 );
+            case 'NICKNAME_IS_BUSY':
+                return(
+                    <div>
+                        room code: {this.props.game.roomCode}<br/>
+                        nick: {this.props.game.playerName}<br/>
+                        WYBRANY NICK JUŻ ISTNIEJE W POKOJU! WYBIERZ INNY!<br/>
+                        <Button color={"primary"} onClick={() => this.props.history.push('/')}>Powrót do menu</Button>
+                    </div>
+                );
             case 'ROOM_NOT_FOUND':
                 return(
                     <div>
                         room code: {this.props.game.roomCode}<br/>
                         nick: {this.props.game.playerName}<br/>
-                        POKÓJ NIE ISTNIEJE!<br/>
+                        POKÓJ NIE ZOSTAŁ ZNALEZIONY!<br/>
                         <Button color={"primary"} onClick={() => this.props.history.push('/')}>Powrót do menu</Button>
                     </div>
                 );

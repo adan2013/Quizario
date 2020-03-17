@@ -8,4 +8,5 @@ export const userCountUpdate = 'USER_COUNT_UPDATE';
 
 export const addToRoom = 'ADD_TO_ROOM';
 export const joinedToRoom = 'JOINED_TO_ROOM';
+export const nicknameIsBusy = 'NICKNAME_IS_BUSY';
 export const roomNotFound = 'ROOM_NOT_FOUND';
