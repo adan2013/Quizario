@@ -13,3 +13,7 @@ export const roomNotFound = 'ROOM_NOT_FOUND';
 
 export const newQuestion = 'NEW_QUESTION';
 export const answersOpen = 'ANSWERS_OPEN';
+export const closeQuestion = 'CLOSE_QUESTION';
+export const answersClose = 'ANSWERS_CLOSE';
+export const answerSelected = 'ANSWER_SELECTED';
+export const answerCountUpdate = 'ANSWER_COUNT_UPDATE';

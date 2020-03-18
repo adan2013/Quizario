@@ -6,7 +6,9 @@ import {
     roomNotFound,
     nicknameIsBusy,
     joinedToRoom,
-    answersOpen
+    answersOpen,
+    answersClose,
+    answerSelected
 } from '../../connection/config'
 import {setHostingRoomAC, switchStateAC} from "../../actions/game";
 import {connect} from "react-redux";
@@ -16,7 +18,9 @@ class Player extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            question: null
+            question: null,
+            selectedAnswer: null,
+            correctAnswer: null
         }
     }
 
@@ -43,8 +47,13 @@ class Player extends React.Component {
             });
 
             this.socket.on(answersOpen, question => {
-                this.setState({question: question});
+                this.setState({question: question, selectedAnswer: null, correctAnswer: null});
                 this.props.switchState('QUESTION');
+            });
+
+            this.socket.on(answersClose, question => {
+                this.setState({question: question, correctAnswer: question.correct});
+                this.props.switchState('WAITING');
             });
 
         }else{
@@ -55,6 +64,24 @@ class Player extends React.Component {
     componentWillUnmount() {
         if(this.socket) this.socket.disconnect();
     }
+
+    selectAnswer = (number) => {
+        if(this.state.question) {
+            this.setState({selectedAnswer: number});
+            this.socket.emit(answerSelected, this.props.game.roomCode, this.props.game.playerName, number);
+            this.props.switchState('WAITING');
+        }
+    };
+
+    returnLetter = (number) => {
+        switch(number) {
+            case 0: return 'A';
+            case 1: return 'B';
+            case 2: return 'C';
+            case 3: return 'D';
+            default: return '';
+        }
+    };
 
     render() {
         switch(this.props.game.state) {
@@ -91,39 +118,46 @@ class Player extends React.Component {
                         room code: {this.props.game.roomCode}<br/>
                         nick: {this.props.game.playerName}<br/>
                         title: {this.props.game.hostingRoom.title}<br/>
-                        Dołączono. Obserwuj komunikaty na ekranie hosta...<br/>
+                        {this.state.selectedAnswer != null ?
+                            this.state.correctAnswer != null ?
+                                this.state.selectedAnswer === this.state.correctAnswer ?
+                                    'Odpowiedź poprawna! Zdobywasz punkty! Obserwuj komunikaty na ekranie hosta...'
+                                    :
+                                    'Odpowiedź błędna :( Poprawna odpowiedź to: '+this.returnLetter(this.state.correctAnswer)+'. Obserwuj komunikaty na ekranie hosta...'
+                                :
+                                'Wybrano odpowiedź '+this.returnLetter(this.state.selectedAnswer)+'. Obserwuj komunikaty na ekranie hosta...'
+                            :
+                            'Dołączono. Obserwuj komunikaty na ekranie hosta...'
+                        }
+                            <br/>
                         <Button variant={"primary"} onClick={() => this.props.history.push('/')}>Wyjdź z gry</Button>
                     </div>
                 );
             case 'QUESTION':
-                return(
-                    <div>
-                        room code: {this.props.game.roomCode}<br/>
-                        nick: {this.props.game.playerName}<br/>
-                        title: {this.props.game.hostingRoom.title}<br/>
-                        Odpowiedz na pytanie:<br/><br/>
-                        Pytanie: {this.state.question.question}<br/>
-                        A: {this.state.question.answers[0]}<br/>
-                        B: {this.state.question.answers[1]}<br/>
-                        C: {this.state.question.answers[2]}<br/>
-                        D: {this.state.question.answers[3]}<br/>
-                        <br/>
-                        <Button variant={"primary"} onClick={() => {
-
-                        }}>Wybierz A</Button>
-                        <Button variant={"primary"} onClick={() => {
-
-                        }}>Wybierz B</Button>
-                        <Button variant={"primary"} onClick={() => {
-
-                        }}>Wybierz C</Button>
-                        <Button variant={"primary"} onClick={() => {
-
-                        }}>Wybierz D</Button>
-                        <br/><br/>
-                        <Button variant={"danger"} onClick={() => this.props.history.push('/')}>Wyjdź z gry</Button>
-                    </div>
-                );
+                if(this.state.question){
+                    return(
+                        <div>
+                            room code: {this.props.game.roomCode}<br/>
+                            nick: {this.props.game.playerName}<br/>
+                            title: {this.props.game.hostingRoom.title}<br/>
+                            Odpowiedz na pytanie:<br/><br/>
+                            Pytanie: {this.state.question.question}<br/>
+                            A: {this.state.question.answers[0]}<br/>
+                            B: {this.state.question.answers[1]}<br/>
+                            C: {this.state.question.answers[2]}<br/>
+                            D: {this.state.question.answers[3]}<br/>
+                            <br/>
+                            <Button variant={"primary"} onClick={() => this.selectAnswer(0)}>Wybierz A</Button>
+                            <Button variant={"primary"} onClick={() => this.selectAnswer(1)}>Wybierz B</Button>
+                            <Button variant={"primary"} onClick={() => this.selectAnswer(2)}>Wybierz C</Button>
+                            <Button variant={"primary"} onClick={() => this.selectAnswer(3)}>Wybierz D</Button>
+                            <br/><br/>
+                            <Button variant={"danger"} onClick={() => this.props.history.push('/')}>Wyjdź z gry</Button>
+                        </div>
+                    );
+                }else{
+                    return(<span/>);
+                }
             default:
                 return(<span>BRAK WIDOKU</span>);
         }

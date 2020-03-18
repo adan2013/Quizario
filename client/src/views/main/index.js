@@ -15,6 +15,7 @@ class Main extends React.Component {
 
     componentDidMount() {
         this.props.setPlayerConfig('', '');
+        this.props.switchState('');
     }
 
     startGame = () => {

@@ -3,12 +3,14 @@ import {setHostingRoomAC, switchStateAC} from "../../actions/game";
 import {connect} from "react-redux";
 import socketIOClient from "socket.io-client";
 import {
+    server,
     closeRoom,
     createNewRoom,
     roomCreated,
     userCountUpdate,
     newQuestion,
-    server
+    closeQuestion,
+    answerCountUpdate
 } from "../../connection/config";
 import {Button, Form} from "react-bootstrap";
 import testQuestions from '../../testQuestions'
@@ -22,7 +24,7 @@ class Host extends React.Component {
             questionLimit: '0',
             randomOrder: false,
             connectedUsers: 0,
-            answersCount: 0,
+            answerCount: 0,
             questions: testQuestions,
             questionIndex: 0,
             questionIsOpen: true
@@ -41,6 +43,10 @@ class Host extends React.Component {
 
         this.socket.on(userCountUpdate, (count) => {
             this.setState({connectedUsers: count})
+        });
+
+        this.socket.on(answerCountUpdate, (count) => {
+            this.setState({answerCount: count})
         });
     }
 
@@ -64,10 +70,47 @@ class Host extends React.Component {
         this.setState({
             questionIndex: index,
             questionIsOpen: true,
-            answersCount: 0
+            answerCount: 0
         });
         this.props.switchState('QUESTION');
         this.socket.emit(newQuestion, this.props.game.hostingRoom.roomCode, this.state.questions[index]);
+    };
+
+    returnLetter = (number) => {
+        switch(number) {
+            case 0: return 'A';
+            case 1: return 'B';
+            case 2: return 'C';
+            case 3: return 'D';
+            default: return '';
+        }
+    };
+
+    ControlButtons = () => {
+        return(
+            <div>
+                <Button variant={"danger"} disabled={this.state.questionIsOpen} onClick={() => {
+
+                }}>Zakończ grę</Button>
+                <Button variant={"warning"} disabled={this.state.questionIsOpen} onClick={() => {
+                    this.props.switchState('CORRECT_ANS');
+                }}>Poprawna odp.</Button>
+                <Button variant={"warning"} disabled={this.state.questionIsOpen} onClick={() => {
+
+                }}>Statystyki tego pytania</Button>
+                <Button variant={"warning"} disabled={this.state.questionIsOpen} onClick={() => {
+
+                }}>Ranking ogólny gry</Button>
+                <Button variant={"primary"} onClick={() => {
+                    if(this.state.questionIsOpen) {
+                        this.setState({questionIsOpen: false});
+                        this.socket.emit(closeQuestion, this.props.game.hostingRoom.roomCode, this.state.questions[this.state.questionIndex]);
+                    }else{
+                        this.nextQuestion(this.state.questionIndex + 1);
+                    }
+                }}>{this.state.questionIsOpen ? 'Zakończ odpowiadanie' : 'Następne pytanie'}</Button>
+            </div>
+        );
     };
 
     render() {
@@ -133,32 +176,23 @@ class Host extends React.Component {
                         title: {this.props.game.hostingRoom.title}<br/>
                         przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
                         Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
-                        Poprawna: {this.state.questions[this.state.questionIndex].correct}<br/>
                         A: {this.state.questions[this.state.questionIndex].answers[0]}<br/>
                         B: {this.state.questions[this.state.questionIndex].answers[1]}<br/>
                         C: {this.state.questions[this.state.questionIndex].answers[2]}<br/>
                         D: {this.state.questions[this.state.questionIndex].answers[3]}<br/>
-                        Liczba udzielonych odpowiedzi: {this.state.answersCount}<br/>
-                        <Button variant={"danger"} disabled={this.state.questionIsOpen} onClick={() => {
-
-                        }}>Zakończ grę</Button>
-                        <Button variant={"warning"} disabled={this.state.questionIsOpen} onClick={() => {
-
-                        }}>Pokaż poprawną</Button>
-                        <Button variant={"warning"} disabled={this.state.questionIsOpen} onClick={() => {
-
-                        }}>Pokaż statystyki tego pytania</Button>
-                        <Button variant={"warning"} disabled={this.state.questionIsOpen} onClick={() => {
-
-                        }}>Pokaż ranking gry</Button>
-                        <Button variant={"primary"} onClick={() => {
-                            if(this.state.questionIsOpen) {
-                                this.setState({questionIsOpen: false});
-                                //TODO send event
-                            }else{
-                                this.nextQuestion(this.state.questionIndex + 1);
-                            }
-                        }}>{this.state.questionIsOpen ? 'Zakończ odpowiadanie' : 'Następne pytanie'}</Button>
+                        Liczba udzielonych odpowiedzi: {this.state.answerCount}<br/>
+                        <this.ControlButtons/>
+                    </div>
+                );
+            case 'CORRECT_ANS':
+                return (
+                    <div>
+                        title: {this.props.game.hostingRoom.title}<br/>
+                        przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
+                        Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
+                        Poprawną odpowiedzią było: {this.returnLetter(this.state.questions[this.state.questionIndex].correct)}<br/>
+                        Liczba udzielonych odpowiedzi: {this.state.answerCount}<br/>
+                        <this.ControlButtons/>
                     </div>
                 );
             default:

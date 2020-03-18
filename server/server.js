@@ -19,12 +19,18 @@ const roomNotFound = 'ROOM_NOT_FOUND';
 
 const newQuestion = 'NEW_QUESTION';
 const answersOpen = 'ANSWERS_OPEN';
+const closeQuestion = 'CLOSE_QUESTION';
+const answersClose = 'ANSWERS_CLOSE';
+const answerSelected = 'ANSWER_SELECTED';
+const answerCountUpdate = 'ANSWER_COUNT_UPDATE';
 
 const createdRooms = [
     {
         roomCode: '111111',
         title: 'quiz testowy',
         hostSocketId: null,
+        correctAnswer: null,
+        answerCount: 0,
         players: [
             {
                 nickname: 'kowalski',
@@ -52,6 +58,32 @@ const getRandomInt = (min, max) => {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+const addPointsToPlayer = (room, player, answer, id) => {
+    let roomObj = getRoomObject(room);
+    if(roomObj) {
+        roomObj.answerCount += 1;
+        getHostSocket(room).emit(answerCountUpdate, roomObj.answerCount);
+        const points = answer === roomObj.correctAnswer ? 1 : 0;
+        let playerObj = roomObj.players.find(item => {
+            return item.nickname === player;
+        });
+        if(playerObj) {
+            playerObj.points += points;
+            console.log(id + ' > player "' + player + '" points: ' + playerObj.points + ' (+' + points + ')');
+        }
+    }
+};
+
+const returnLetter = (number) => {
+    switch(number) {
+        case 0: return 'A';
+        case 1: return 'B';
+        case 2: return 'C';
+        case 3: return 'D';
+        default: return '';
+    }
 };
 
 io.on('connection', socket => {
@@ -106,7 +138,7 @@ io.on('connection', socket => {
                 socket.join(roomCode);
                 socket.emit(joinedToRoom, getRoomObject(roomCode));
                 const userCount = theRoom.players.length;
-                getHostSocket(roomCode).emit(userCountUpdate, userCount);
+                if(getHostSocket(roomCode)) getHostSocket(roomCode).emit(userCountUpdate, userCount);
                 console.log(socket.id + ' > user joined to room ' + roomCode + ' with nickname ' + socket.nickname + ' (players in room: ' + userCount + ')');
             }
         }else{
@@ -116,8 +148,23 @@ io.on('connection', socket => {
     });
 
     socket.on(newQuestion, (room, question) => {
-        console.log(socket.id + ' > host of room "' + room + '" opened new question');
+        console.log(socket.id + ' > host of room "' + room + '" opened a new question (correct answer is ' + returnLetter(question.correct) + ')');
+        let roomObj = getRoomObject(room);
+        if(roomObj) {
+            roomObj.correctAnswer = question.correct;
+            roomObj.answerCount = 0;
+        }
         socket.to(room).emit(answersOpen, question);
+    });
+
+    socket.on(closeQuestion, (room, question) => {
+        console.log(socket.id + ' > host of room "' + room + '" closed current question');
+        socket.to(room).emit(answersClose, question);
+    });
+
+    socket.on(answerSelected, (room, player, answer) => {
+        console.log(socket.id + ' > player "' + player + '" send answer ' + returnLetter(answer) + ' in room ' + room);
+        addPointsToPlayer(room, player, answer, socket.id);
     });
 
     socket.on('disconnect', () => {
