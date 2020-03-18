@@ -10,3 +10,6 @@ export const addToRoom = 'ADD_TO_ROOM';
 export const joinedToRoom = 'JOINED_TO_ROOM';
 export const nicknameIsBusy = 'NICKNAME_IS_BUSY';
 export const roomNotFound = 'ROOM_NOT_FOUND';
+
+export const newQuestion = 'NEW_QUESTION';
+export const answersOpen = 'ANSWERS_OPEN';

@@ -1,0 +1,62 @@
+[
+    {
+        "question": "pytanie numer 1? (poprawne A)",
+        "correct": 0,
+        "answers": [
+            "1 odpowiedź A",
+            "1 odpowiedź B",
+            "1 odpowiedź C",
+            "1 odpowiedź D"
+        ]
+    },
+    {
+        "question": "pytanie numer 2? (poprawne B)",
+        "correct": 1,
+        "answers": [
+            "2 odpowiedź A",
+            "2 odpowiedź B",
+            "2 odpowiedź C",
+            "2 odpowiedź D"
+        ]
+    },
+    {
+        "question": "pytanie numer 3? (poprawne C)",
+        "correct": 2,
+        "answers": [
+            "3 odpowiedź A",
+            "3 odpowiedź B",
+            "3 odpowiedź C",
+            "3 odpowiedź D"
+        ]
+    },
+    {
+        "question": "pytanie numer 4? (poprawne D)",
+        "correct": 3,
+        "answers": [
+            "4 odpowiedź A",
+            "4 odpowiedź B",
+            "4 odpowiedź C",
+            "4 odpowiedź D"
+        ]
+    },
+    {
+        "question": "pytanie numer 5? (poprawne A)",
+        "correct": 0,
+        "answers": [
+            "5 odpowiedź A",
+            "5 odpowiedź B",
+            "5 odpowiedź C",
+            "5 odpowiedź D"
+        ]
+    },
+    {
+        "question": "pytanie numer 6? (poprawne B)",
+        "correct": 1,
+        "answers": [
+            "6 odpowiedź A",
+            "6 odpowiedź B",
+            "6 odpowiedź C",
+            "6 odpowiedź D"
+        ]
+    }
+]

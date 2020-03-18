@@ -10,13 +10,15 @@ const io = socketIO(server);
 const createNewRoom = 'CREATE_NEW_ROOW';
 const roomCreated = 'ROOM_CREATED';
 const closeRoom = 'CLOSE_ROOM';
-
 const userCountUpdate = 'USER_COUNT_UPDATE';
 
 const addToRoom = 'ADD_TO_ROOM';
 const joinedToRoom = 'JOINED_TO_ROOM';
 const nicknameIsBusy = 'NICKNAME_IS_BUSY';
 const roomNotFound = 'ROOM_NOT_FOUND';
+
+const newQuestion = 'NEW_QUESTION';
+const answersOpen = 'ANSWERS_OPEN';
 
 const createdRooms = [
     {
@@ -100,7 +102,6 @@ io.on('connection', socket => {
                    nickname: playerName,
                    points: 0
                 });
-                console.log(theRoom.players);
                 socket.nickname = playerName;
                 socket.join(roomCode);
                 socket.emit(joinedToRoom, getRoomObject(roomCode));
@@ -112,6 +113,11 @@ io.on('connection', socket => {
             socket.emit(roomNotFound);
             console.log(socket.id + ' > room with code ' + roomCode + ' not found!');
         }
+    });
+
+    socket.on(newQuestion, (room, question) => {
+        console.log(socket.id + ' > host of room "' + room + '" opened new question');
+        socket.to(room).emit(answersOpen, question);
     });
 
     socket.on('disconnect', () => {
