@@ -165,7 +165,7 @@ class Player extends React.Component {
                     return(<span/>);
                 }
             case 'FINAL':
-                let stats = this.state.stats;
+                let stats = this.state.stats.slice();
                 stats.sort((a, b) => {
                     if(a.points < b.points) return 1;
                     if(a.points > b.points) return -1;

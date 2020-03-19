@@ -124,9 +124,9 @@ io.on('connection', socket => {
         });
         if(i > -1) {
             let roomObj = getRoomObject(code);
-            socket.to(code).emit(gameCompleted, roomObj.players);
+            io.to(code).emit(gameCompleted, roomObj.players);
             createdRooms.splice(i, 1);
-            console.log(socket.id + ' > user closed the room with code ' + code + ' (active rooms: ' + createdRooms.length + ')');
+            console.log(socket.id + ' > host closed the room with code ' + code + ' (active rooms: ' + createdRooms.length + ')');
         }
     });
 

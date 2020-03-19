@@ -14,7 +14,8 @@ import {
     answerStatsRequest,
     answerStatsResponse,
     generalRankingRequest,
-    generalRankingResponse
+    generalRankingResponse,
+    gameCompleted
 } from "../../connection/config";
 import {Button, Form} from "react-bootstrap";
 import testQuestions from '../../testQuestions'
@@ -63,6 +64,11 @@ class Host extends React.Component {
         this.socket.on(generalRankingResponse, (stats) => {
             this.setState({generalRanking: stats})
         });
+
+        this.socket.on(gameCompleted, (stats) => {
+            this.setState({generalRanking: stats});
+            this.props.switchState('FINAL');
+        });
     }
 
     componentWillUnmount() {
@@ -107,7 +113,6 @@ class Host extends React.Component {
             <div>
                 <Button variant={"danger"} disabled={this.state.questionIsOpen} onClick={() => {
                     this.socket.emit(closeRoom, this.props.game.hostingRoom.roomCode);
-                    this.props.history.push('/');
                 }}>Zakończ grę</Button>
                 <Button variant={"warning"} disabled={this.state.questionIsOpen || this.state.questionTab === 1} onClick={() => {
                     this.setState({questionTab: 1})
@@ -126,7 +131,7 @@ class Host extends React.Component {
                     });
                     this.socket.emit(generalRankingRequest, this.props.game.hostingRoom.roomCode);
                 }}>Ranking ogólny gry</Button>
-                <Button variant={"primary"} onClick={() => {
+                <Button variant={"primary"} disabled={this.isLastQuestion() && !this.state.questionIsOpen} onClick={() => {
                     if(this.state.questionIsOpen) {
                         this.setState({questionIsOpen: false});
                         this.socket.emit(closeQuestion, this.props.game.hostingRoom.roomCode, this.state.questions[this.state.questionIndex]);
@@ -136,6 +141,11 @@ class Host extends React.Component {
                 }}>{this.state.questionIsOpen ? 'Zakończ odpowiadanie' : 'Następne pytanie'}</Button>
             </div>
         );
+    };
+
+    isLastQuestion = () => {
+        //only non random questions
+        return this.state.questionIndex + 1 === this.state.questions.length;
     };
 
     render() {
@@ -249,7 +259,7 @@ class Host extends React.Component {
                         }
                     case 3: //general rank
                         if(this.state.generalRanking) {
-                            let rank = this.state.generalRanking;
+                            let rank = this.state.generalRanking.slice();
                             rank.sort((a, b) => {
                                 if(a.points < b.points) return 1;
                                 if(a.points > b.points) return -1;
@@ -297,6 +307,41 @@ class Host extends React.Component {
                             </div>
                         );
                 }
+            case 'FINAL':
+                let rank = this.state.generalRanking.slice();
+                let alpha = this.state.generalRanking.slice();
+                rank.sort((a, b) => {
+                    if(a.points < b.points) return 1;
+                    if(a.points > b.points) return -1;
+                    return 0;
+                });
+                alpha.sort((a, b) => {
+                    const nameA = a.nickname.toUpperCase();
+                    const nameB = b.nickname.toUpperCase();
+                    return (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;
+                });
+                return (
+                    <div>
+                        title: {this.props.game.hostingRoom.title}<br/>
+                        przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}
+                        <br/><br/>
+                        Ranking generalny:<br/>
+                        {
+                            rank.map(item => {
+                                return <div key={item.nickname}>{item.nickname + ' - punktów ' + item.points}</div>;
+                            })
+                        }
+                        <br/><br/>
+                        Alfabetyczna lista graczy:<br/>
+                        {
+                            alpha.map(item => {
+                                return <div key={item.nickname}>{item.nickname + ' - punktów ' + item.points}</div>;
+                            })
+                        }
+                        <br/><br/>
+                        <Button variant={"primary"} onClick={() => this.props.history.push('/')}>Powrót do menu</Button>
+                    </div>
+                );
             default:
                 return(<span>BRAK WIDOKU</span>);
         }
