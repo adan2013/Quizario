@@ -20,3 +20,6 @@ export const answerCountUpdate = 'ANSWER_COUNT_UPDATE';
 
 export const answerStatsRequest = 'ANSWER_STATS_REQUEST';
 export const answerStatsResponse = 'ANSWER_STATS_RESPONSE';
+
+export const generalRankingRequest = 'GENERAL_RANKING_REQUEST';
+export const generalRankingResponse = 'GENERAL_RANKING_RESPONSE';

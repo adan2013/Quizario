@@ -12,7 +12,9 @@ import {
     closeQuestion,
     answerCountUpdate,
     answerStatsRequest,
-    answerStatsResponse
+    answerStatsResponse,
+    generalRankingRequest,
+    generalRankingResponse
 } from "../../connection/config";
 import {Button, Form} from "react-bootstrap";
 import testQuestions from '../../testQuestions'
@@ -31,7 +33,8 @@ class Host extends React.Component {
             questionIndex: 0,
             questionIsOpen: true,
             questionTab: 0,
-            answerStats: null
+            answerStats: null,
+            generalRanking: null
         }
     }
 
@@ -55,6 +58,10 @@ class Host extends React.Component {
 
         this.socket.on(answerStatsResponse, (stats) => {
             this.setState({answerStats: stats})
+        });
+
+        this.socket.on(generalRankingResponse, (stats) => {
+            this.setState({generalRanking: stats})
         });
     }
 
@@ -112,7 +119,11 @@ class Host extends React.Component {
                     this.socket.emit(answerStatsRequest, this.props.game.hostingRoom.roomCode);
                 }}>Statystyki tego pytania</Button>
                 <Button variant={"warning"} disabled={this.state.questionIsOpen || this.state.questionTab === 3} onClick={() => {
-                    this.setState({questionTab: 3})
+                    this.setState({
+                        questionTab: 3,
+                        generalRanking: null
+                    });
+                    this.socket.emit(generalRankingRequest, this.props.game.hostingRoom.roomCode);
                 }}>Ranking ogólny gry</Button>
                 <Button variant={"primary"} onClick={() => {
                     if(this.state.questionIsOpen) {
@@ -236,16 +247,40 @@ class Host extends React.Component {
                             );
                         }
                     case 3: //general rank
-                        return (
-                            <div>
-                                title: {this.props.game.hostingRoom.title}<br/>
-                                przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
-                                Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
-                                Poprawną odpowiedzią było: {this.returnLetter(this.state.questions[this.state.questionIndex].correct)}<br/>
-                                Liczba udzielonych odpowiedzi: {this.state.answerCount}<br/>
-                                <this.ControlButtons/>
-                            </div>
-                        );
+                        if(this.state.generalRanking) {
+                            let rank = this.state.generalRanking;
+                            rank.sort((a, b) => {
+                                if(a.points < b.points) return 1;
+                                if(a.points > b.points) return -1;
+                                return 0;
+                            });
+                            return (
+                                <div>
+                                    title: {this.props.game.hostingRoom.title}<br/>
+                                    przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
+                                    Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
+                                    Ranking generalny:<br/>
+                                    {
+                                        rank.map(item => {
+                                            return <div key={item.nickname}>{item.nickname + ' - punktów ' + item.points}</div>;
+                                        })
+                                    }
+                                    Liczba udzielonych odpowiedzi: {this.state.answerCount}<br/>
+                                    <this.ControlButtons/>
+                                </div>
+                            );
+                        }else{
+                            return (
+                                <div>
+                                    title: {this.props.game.hostingRoom.title}<br/>
+                                    przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
+                                    Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
+                                    POBIERANIE RANKINGU GENERALNEGO...<br/>
+                                    Liczba udzielonych odpowiedzi: {this.state.answerCount}<br/>
+                                    <this.ControlButtons/>
+                                </div>
+                            );
+                        }
                     default:
                         return (
                             <div>

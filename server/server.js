@@ -27,6 +27,9 @@ const answerCountUpdate = 'ANSWER_COUNT_UPDATE';
 const answerStatsRequest = 'ANSWER_STATS_REQUEST';
 const answerStatsResponse = 'ANSWER_STATS_RESPONSE';
 
+const generalRankingRequest = 'GENERAL_RANKING_REQUEST';
+const generalRankingResponse = 'GENERAL_RANKING_RESPONSE';
+
 const createdRooms = [
     {
         roomCode: '111111',
@@ -178,6 +181,14 @@ io.on('connection', socket => {
         if(roomObj) {
             console.log(socket.id + ' > host of room "' + room + '" reqests answer stats');
             socket.emit(answerStatsResponse, roomObj.answerStats);
+        }
+    });
+
+    socket.on(generalRankingRequest, (room) => {
+        let roomObj = getRoomObject(room);
+        if(roomObj) {
+            console.log(socket.id + ' > host of room "' + room + '" reqests general ranking table');
+            socket.emit(generalRankingResponse, roomObj.players);
         }
     });
 
