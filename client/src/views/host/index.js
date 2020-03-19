@@ -10,7 +10,9 @@ import {
     userCountUpdate,
     newQuestion,
     closeQuestion,
-    answerCountUpdate
+    answerCountUpdate,
+    answerStatsRequest,
+    answerStatsResponse
 } from "../../connection/config";
 import {Button, Form} from "react-bootstrap";
 import testQuestions from '../../testQuestions'
@@ -27,7 +29,9 @@ class Host extends React.Component {
             answerCount: 0,
             questions: testQuestions,
             questionIndex: 0,
-            questionIsOpen: true
+            questionIsOpen: true,
+            questionTab: 0,
+            answerStats: null
         }
     }
 
@@ -47,6 +51,10 @@ class Host extends React.Component {
 
         this.socket.on(answerCountUpdate, (count) => {
             this.setState({answerCount: count})
+        });
+
+        this.socket.on(answerStatsResponse, (stats) => {
+            this.setState({answerStats: stats})
         });
     }
 
@@ -70,7 +78,8 @@ class Host extends React.Component {
         this.setState({
             questionIndex: index,
             questionIsOpen: true,
-            answerCount: 0
+            answerCount: 0,
+            questionTab: 0
         });
         this.props.switchState('QUESTION');
         this.socket.emit(newQuestion, this.props.game.hostingRoom.roomCode, this.state.questions[index]);
@@ -92,14 +101,18 @@ class Host extends React.Component {
                 <Button variant={"danger"} disabled={this.state.questionIsOpen} onClick={() => {
 
                 }}>Zakończ grę</Button>
-                <Button variant={"warning"} disabled={this.state.questionIsOpen} onClick={() => {
-                    this.props.switchState('CORRECT_ANS');
+                <Button variant={"warning"} disabled={this.state.questionIsOpen || this.state.questionTab === 1} onClick={() => {
+                    this.setState({questionTab: 1})
                 }}>Poprawna odp.</Button>
-                <Button variant={"warning"} disabled={this.state.questionIsOpen} onClick={() => {
-
+                <Button variant={"warning"} disabled={this.state.questionIsOpen || this.state.questionTab === 2} onClick={() => {
+                    this.setState({
+                        questionTab: 2,
+                        answerStats: null
+                    });
+                    this.socket.emit(answerStatsRequest, this.props.game.hostingRoom.roomCode);
                 }}>Statystyki tego pytania</Button>
-                <Button variant={"warning"} disabled={this.state.questionIsOpen} onClick={() => {
-
+                <Button variant={"warning"} disabled={this.state.questionIsOpen || this.state.questionTab === 3} onClick={() => {
+                    this.setState({questionTab: 3})
                 }}>Ranking ogólny gry</Button>
                 <Button variant={"primary"} onClick={() => {
                     if(this.state.questionIsOpen) {
@@ -171,30 +184,83 @@ class Host extends React.Component {
                     </div>
                 );
             case 'QUESTION':
-                return (
-                    <div>
-                        title: {this.props.game.hostingRoom.title}<br/>
-                        przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
-                        Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
-                        A: {this.state.questions[this.state.questionIndex].answers[0]}<br/>
-                        B: {this.state.questions[this.state.questionIndex].answers[1]}<br/>
-                        C: {this.state.questions[this.state.questionIndex].answers[2]}<br/>
-                        D: {this.state.questions[this.state.questionIndex].answers[3]}<br/>
-                        Liczba udzielonych odpowiedzi: {this.state.answerCount}<br/>
-                        <this.ControlButtons/>
-                    </div>
-                );
-            case 'CORRECT_ANS':
-                return (
-                    <div>
-                        title: {this.props.game.hostingRoom.title}<br/>
-                        przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
-                        Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
-                        Poprawną odpowiedzią było: {this.returnLetter(this.state.questions[this.state.questionIndex].correct)}<br/>
-                        Liczba udzielonych odpowiedzi: {this.state.answerCount}<br/>
-                        <this.ControlButtons/>
-                    </div>
-                );
+                switch (this.state.questionTab) {
+                    case 1: //correct answer
+                        return (
+                            <div>
+                                title: {this.props.game.hostingRoom.title}<br/>
+                                przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
+                                Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
+                                Poprawną odpowiedzią było: {this.returnLetter(this.state.questions[this.state.questionIndex].correct)}<br/>
+                                Liczba udzielonych odpowiedzi: {this.state.answerCount}<br/>
+                                <this.ControlButtons/>
+                            </div>
+                        );
+                    case 2: //question stats
+                        if(this.state.answerStats) {
+                            let p1, p2, p3, p4;
+                            if(this.state.answerCount === 0) {
+                                p1 = 0;
+                                p2 = 0;
+                                p3 = 0;
+                                p4 = 0;
+                            }else{
+                                p1 = Math.round(this.state.answerStats[0] * 100 / this.state.answerCount);
+                                p2 = Math.round(this.state.answerStats[1] * 100 / this.state.answerCount);
+                                p3 = Math.round(this.state.answerStats[2] * 100 / this.state.answerCount);
+                                p4 = Math.round(this.state.answerStats[3] * 100 / this.state.answerCount);
+                            }
+                            return (
+                                <div>
+                                    title: {this.props.game.hostingRoom.title}<br/>
+                                    przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
+                                    Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
+                                    Liczba głosów na odpowiedź A: {this.state.answerStats[0]} {p1}%<br/>
+                                    Liczba głosów na odpowiedź B: {this.state.answerStats[1]} {p2}%<br/>
+                                    Liczba głosów na odpowiedź C: {this.state.answerStats[2]} {p3}%<br/>
+                                    Liczba głosów na odpowiedź D: {this.state.answerStats[3]} {p4}%<br/>
+                                    Liczba udzielonych odpowiedzi: {this.state.answerCount}<br/>
+                                    <this.ControlButtons/>
+                                </div>
+                            );
+                        }else{
+                            return (
+                                <div>
+                                    title: {this.props.game.hostingRoom.title}<br/>
+                                    przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
+                                    Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
+                                    POBIERANIE STATYSTYK...<br/>
+                                    Liczba udzielonych odpowiedzi: {this.state.answerCount}<br/>
+                                    <this.ControlButtons/>
+                                </div>
+                            );
+                        }
+                    case 3: //general rank
+                        return (
+                            <div>
+                                title: {this.props.game.hostingRoom.title}<br/>
+                                przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
+                                Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
+                                Poprawną odpowiedzią było: {this.returnLetter(this.state.questions[this.state.questionIndex].correct)}<br/>
+                                Liczba udzielonych odpowiedzi: {this.state.answerCount}<br/>
+                                <this.ControlButtons/>
+                            </div>
+                        );
+                    default:
+                        return (
+                            <div>
+                                title: {this.props.game.hostingRoom.title}<br/>
+                                przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
+                                Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
+                                A: {this.state.questions[this.state.questionIndex].answers[0]}<br/>
+                                B: {this.state.questions[this.state.questionIndex].answers[1]}<br/>
+                                C: {this.state.questions[this.state.questionIndex].answers[2]}<br/>
+                                D: {this.state.questions[this.state.questionIndex].answers[3]}<br/>
+                                Liczba udzielonych odpowiedzi: {this.state.answerCount}<br/>
+                                <this.ControlButtons/>
+                            </div>
+                        );
+                }
             default:
                 return(<span>BRAK WIDOKU</span>);
         }

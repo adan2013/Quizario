@@ -24,6 +24,9 @@ const answersClose = 'ANSWERS_CLOSE';
 const answerSelected = 'ANSWER_SELECTED';
 const answerCountUpdate = 'ANSWER_COUNT_UPDATE';
 
+const answerStatsRequest = 'ANSWER_STATS_REQUEST';
+const answerStatsResponse = 'ANSWER_STATS_RESPONSE';
+
 const createdRooms = [
     {
         roomCode: '111111',
@@ -31,6 +34,7 @@ const createdRooms = [
         hostSocketId: null,
         correctAnswer: null,
         answerCount: 0,
+        answerStats: [0, 0, 0, 0],
         players: [
             {
                 nickname: 'kowalski',
@@ -65,6 +69,7 @@ const addPointsToPlayer = (room, player, answer, id) => {
     if(roomObj) {
         roomObj.answerCount += 1;
         getHostSocket(room).emit(answerCountUpdate, roomObj.answerCount);
+        roomObj.answerStats[answer] += 1;
         const points = answer === roomObj.correctAnswer ? 1 : 0;
         let playerObj = roomObj.players.find(item => {
             return item.nickname === player;
@@ -153,6 +158,7 @@ io.on('connection', socket => {
         if(roomObj) {
             roomObj.correctAnswer = question.correct;
             roomObj.answerCount = 0;
+            roomObj.answerStats = [0, 0, 0, 0];
         }
         socket.to(room).emit(answersOpen, question);
     });
@@ -165,6 +171,14 @@ io.on('connection', socket => {
     socket.on(answerSelected, (room, player, answer) => {
         console.log(socket.id + ' > player "' + player + '" send answer ' + returnLetter(answer) + ' in room ' + room);
         addPointsToPlayer(room, player, answer, socket.id);
+    });
+
+    socket.on(answerStatsRequest, (room) => {
+        let roomObj = getRoomObject(room);
+        if(roomObj) {
+            console.log(socket.id + ' > host of room "' + room + '" reqests answer stats');
+            socket.emit(answerStatsResponse, roomObj.answerStats);
+        }
     });
 
     socket.on('disconnect', () => {
