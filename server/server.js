@@ -72,7 +72,8 @@ const addPointsToPlayer = (room, player, answer, id) => {
     let roomObj = getRoomObject(room);
     if(roomObj) {
         roomObj.answerCount += 1;
-        getHostSocket(room).emit(answerCountUpdate, roomObj.answerCount);
+        let host = getHostSocket(room);
+        if(host) host.emit(answerCountUpdate, roomObj.answerCount);
         roomObj.answerStats[answer] += 1;
         const points = answer === roomObj.correctAnswer ? 1 : 0;
         let playerObj = roomObj.players.find(item => {
@@ -132,25 +133,25 @@ io.on('connection', socket => {
 
     //ADDING NEW USER TO THE ROOM
     socket.on(addToRoom, (roomCode, playerName) => {
-        if(getRoomObject(roomCode)) {
-            const theRoom = getRoomObject(roomCode);
+        const theRoom = getRoomObject(roomCode);
+        if(theRoom) {
             const isBusy = theRoom.players.findIndex(item => {
                 return item.nickname === playerName;
             });
             if(isBusy >= 0) {
                 socket.emit(nicknameIsBusy);
-                console.log(socket.id + ' > in room "' + roomCode + '" nickname "' + playerName + '" is already busy! Player request rejected!');
+                console.log(socket.id + ' > in room ' + roomCode + ' nickname "' + playerName + '" is already busy! Player request rejected!');
             }else{
                 theRoom.players.push({
                    nickname: playerName,
                    points: 0
                 });
-                socket.nickname = playerName;
                 socket.join(roomCode);
                 socket.emit(joinedToRoom, getRoomObject(roomCode));
                 const userCount = theRoom.players.length;
-                if(getHostSocket(roomCode)) getHostSocket(roomCode).emit(userCountUpdate, userCount);
-                console.log(socket.id + ' > user joined to room ' + roomCode + ' with nickname ' + socket.nickname + ' (players in room: ' + userCount + ')');
+                let host = getHostSocket(roomCode);
+                if(host) host.emit(userCountUpdate, userCount);
+                console.log(socket.id + ' > user joined to room ' + roomCode + ' with nickname "' + socket.nickname + '" (players in room: ' + userCount + ')');
             }
         }else{
             socket.emit(roomNotFound);
@@ -158,8 +159,9 @@ io.on('connection', socket => {
         }
     });
 
+    //RUN NEW QUESTION
     socket.on(newQuestion, (room, question) => {
-        console.log(socket.id + ' > host of room "' + room + '" opened a new question (correct answer is ' + returnLetter(question.correct) + ')');
+        console.log(socket.id + ' > host of room ' + room + ' opened a new question (correct answer is ' + returnLetter(question.correct) + ')');
         let roomObj = getRoomObject(room);
         if(roomObj) {
             roomObj.correctAnswer = question.correct;
@@ -169,8 +171,9 @@ io.on('connection', socket => {
         socket.to(room).emit(answersOpen, question);
     });
 
+    //CLOSE QUESTION
     socket.on(closeQuestion, (room, question) => {
-        console.log(socket.id + ' > host of room "' + room + '" closed current question');
+        console.log(socket.id + ' > host of room ' + room + ' closed current question');
         socket.to(room).emit(answersClose, question);
     });
 
@@ -182,7 +185,7 @@ io.on('connection', socket => {
     socket.on(answerStatsRequest, (room) => {
         let roomObj = getRoomObject(room);
         if(roomObj) {
-            console.log(socket.id + ' > host of room "' + room + '" reqests answer stats');
+            console.log(socket.id + ' > host of room ' + room + ' requests answer stats');
             socket.emit(answerStatsResponse, roomObj.answerStats);
         }
     });
@@ -190,7 +193,7 @@ io.on('connection', socket => {
     socket.on(generalRankingRequest, (room) => {
         let roomObj = getRoomObject(room);
         if(roomObj) {
-            console.log(socket.id + ' > host of room "' + room + '" reqests general ranking table');
+            console.log(socket.id + ' > host of room ' + room + ' requests general ranking table');
             socket.emit(generalRankingResponse, roomObj.players);
         }
     });
