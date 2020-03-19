@@ -106,7 +106,8 @@ class Host extends React.Component {
         return(
             <div>
                 <Button variant={"danger"} disabled={this.state.questionIsOpen} onClick={() => {
-
+                    this.socket.emit(closeRoom, this.props.game.hostingRoom.roomCode);
+                    this.props.history.push('/');
                 }}>Zakończ grę</Button>
                 <Button variant={"warning"} disabled={this.state.questionIsOpen || this.state.questionTab === 1} onClick={() => {
                     this.setState({questionTab: 1})

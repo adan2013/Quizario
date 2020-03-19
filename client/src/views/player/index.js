@@ -8,7 +8,8 @@ import {
     joinedToRoom,
     answersOpen,
     answersClose,
-    answerSelected
+    answerSelected,
+    gameCompleted
 } from '../../connection/config'
 import {setHostingRoomAC, switchStateAC} from "../../actions/game";
 import {connect} from "react-redux";
@@ -54,6 +55,11 @@ class Player extends React.Component {
             this.socket.on(answersClose, question => {
                 this.setState({question: question, correctAnswer: question.correct});
                 this.props.switchState('WAITING');
+            });
+
+            this.socket.on(gameCompleted, stats => {
+                this.setState({stats: stats});
+                this.props.switchState('FINAL');
             });
 
         }else{
@@ -153,6 +159,33 @@ class Player extends React.Component {
                             <Button variant={"primary"} onClick={() => this.selectAnswer(3)}>Wybierz D</Button>
                             <br/><br/>
                             <Button variant={"danger"} onClick={() => this.props.history.push('/')}>Wyjdź z gry</Button>
+                        </div>
+                    );
+                }else{
+                    return(<span/>);
+                }
+            case 'FINAL':
+                let stats = this.state.stats;
+                stats.sort((a, b) => {
+                    if(a.points < b.points) return 1;
+                    if(a.points > b.points) return -1;
+                    return 0;
+                });
+                let place = stats.findIndex(item => {
+                    return item.nickname === this.props.game.playerName;
+                });
+                if(place > -1) {
+                    let totalPoints = stats[place].points;
+                    place++; // 0 > 1, 1 > 2 etc.
+                    return(
+                        <div>
+                            room code: {this.props.game.roomCode}<br/>
+                            nick: {this.props.game.playerName}<br/>
+                            title: {this.props.game.hostingRoom.title}<br/>
+                            <br/>
+                            Zdobyto punktów {totalPoints} oraz zajęto miejsce nr {place} w rankingu generalnym gry<br/>
+                            <br/>
+                            <Button variant={"primary"} onClick={() => this.props.history.push('/')}>Powrót do menu</Button>
                         </div>
                     );
                 }else{

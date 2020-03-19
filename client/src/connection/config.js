@@ -3,6 +3,7 @@ export const server = (process.env.NODE_ENV === 'development' ? 'http://localhos
 export const createNewRoom = 'CREATE_NEW_ROOW';
 export const roomCreated = 'ROOM_CREATED';
 export const closeRoom = 'CLOSE_ROOM';
+export const gameCompleted = 'GAME_COMPLETED';
 
 export const userCountUpdate = 'USER_COUNT_UPDATE';
 
