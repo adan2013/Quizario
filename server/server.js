@@ -147,7 +147,7 @@ io.on('connection', socket => {
                    points: 0
                 });
                 socket.join(roomCode);
-                socket.emit(joinedToRoom, getRoomObject(roomCode));
+                socket.emit(joinedToRoom, theRoom);
                 const userCount = theRoom.players.length;
                 let host = getHostSocket(roomCode);
                 if(host) host.emit(userCountUpdate, userCount);

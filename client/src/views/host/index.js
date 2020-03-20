@@ -76,15 +76,19 @@ class Host extends React.Component {
     }
 
     createRoom = () => {
-        const data = {
-            title: this.state.title,
-            timeLimit: this.state.timeLimit,
-            questionLimit: this.state.questionLimit,
-            randomOrder: this.state.randomOrder
-        };
-        this.props.setHostingRoom(data);
-        this.props.switchState('WAITING_FOR_CODE');
-        this.socket.emit(createNewRoom, data);
+        if(isNaN(this.state.questionLimit) || isNaN(this.state.timeLimit) || this.state.title === ''){
+            alert('błędne wartości!');
+        }else{
+            const data = {
+                title: this.state.title,
+                timeLimit: this.state.timeLimit,
+                questionLimit: this.state.questionLimit,
+                randomOrder: this.state.randomOrder
+            };
+            this.props.setHostingRoom(data);
+            this.props.switchState('WAITING_FOR_CODE');
+            this.socket.emit(createNewRoom, data);
+        }
     };
 
     nextQuestion = (index) => {
@@ -144,8 +148,15 @@ class Host extends React.Component {
     };
 
     isLastQuestion = () => {
-        //only non random questions
-        return this.state.questionIndex + 1 === this.state.questions.length;
+        return this.state.questionIndex + 1 === this.lastIndexNumber();
+    };
+
+    lastIndexNumber = () => {
+        if(this.state.questionLimit === '0') {
+            return this.state.questions.length;
+        }else{
+            return Math.min(parseInt(this.state.questionLimit), this.state.questions.length);
+        }
     };
 
     render() {
@@ -210,6 +221,7 @@ class Host extends React.Component {
                     case 1: //correct answer
                         return (
                             <div>
+                                licznik: {this.state.questionIndex + 1}/{this.lastIndexNumber()}<br/>
                                 title: {this.props.game.hostingRoom.title}<br/>
                                 przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
                                 Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
@@ -234,6 +246,7 @@ class Host extends React.Component {
                             }
                             return (
                                 <div>
+                                    licznik: {this.state.questionIndex + 1}/{this.lastIndexNumber()}<br/>
                                     title: {this.props.game.hostingRoom.title}<br/>
                                     przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
                                     Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
@@ -248,6 +261,7 @@ class Host extends React.Component {
                         }else{
                             return (
                                 <div>
+                                    licznik: {this.state.questionIndex + 1}/{this.lastIndexNumber()}<br/>
                                     title: {this.props.game.hostingRoom.title}<br/>
                                     przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
                                     Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
@@ -267,6 +281,7 @@ class Host extends React.Component {
                             });
                             return (
                                 <div>
+                                    licznik: {this.state.questionIndex + 1}/{this.lastIndexNumber()}<br/>
                                     title: {this.props.game.hostingRoom.title}<br/>
                                     przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
                                     Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
@@ -283,6 +298,7 @@ class Host extends React.Component {
                         }else{
                             return (
                                 <div>
+                                    licznik: {this.state.questionIndex + 1}/{this.lastIndexNumber()}<br/>
                                     title: {this.props.game.hostingRoom.title}<br/>
                                     przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
                                     Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
@@ -295,6 +311,7 @@ class Host extends React.Component {
                     default:
                         return (
                             <div>
+                                licznik: {this.state.questionIndex + 1}/{this.lastIndexNumber()}<br/>
                                 title: {this.props.game.hostingRoom.title}<br/>
                                 przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
                                 Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
