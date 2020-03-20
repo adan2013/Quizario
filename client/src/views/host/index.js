@@ -30,7 +30,7 @@ class Host extends React.Component {
             randomOrder: false,
             connectedUsers: 0,
             answerCount: 0,
-            questions: testQuestions,
+            questions: [],
             questionIndex: 0,
             questionIsOpen: true,
             questionTab: 0,
@@ -75,8 +75,20 @@ class Host extends React.Component {
         this.socket.disconnect();
     }
 
+    shuffle = (array) => {
+        let currentIndex = array.length, temporaryValue, randomIndex;
+        while (0 !== currentIndex) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+        return array;
+    };
+
     createRoom = () => {
-        if(isNaN(this.state.questionLimit) || isNaN(this.state.timeLimit) || this.state.title === ''){
+        if(this.state.questionLimit === '' || this.state.timeLimit === '' || isNaN(this.state.questionLimit) || isNaN(this.state.timeLimit) || this.state.title === ''){
             alert('błędne wartości!');
         }else{
             const data = {
@@ -85,6 +97,11 @@ class Host extends React.Component {
                 questionLimit: this.state.questionLimit,
                 randomOrder: this.state.randomOrder
             };
+            let q = testQuestions;
+            if(this.state.randomOrder) this.shuffle(q);
+            this.setState({
+                questions: q
+            });
             this.props.setHostingRoom(data);
             this.props.switchState('WAITING_FOR_CODE');
             this.socket.emit(createNewRoom, data);
