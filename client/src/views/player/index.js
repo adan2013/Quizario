@@ -11,9 +11,11 @@ import {
     answerSelected,
     gameCompleted
 } from '../../connection/config'
+import {returnLetter} from "../../utilities";
 import {setHostingRoomAC, switchStateAC} from "../../actions/game";
 import {connect} from "react-redux";
 import {Button} from "react-bootstrap";
+import LoadingRoom from "./LoadingRoom";
 
 class Player extends React.Component {
     constructor(props) {
@@ -27,7 +29,9 @@ class Player extends React.Component {
 
     componentDidMount() {
         this.props.switchState('LOADING_ROOM');
-        if(this.props.game.roomCode && this.props.game.playerName) {
+        //this.props.game.roomCode && this.props.game.playerName TODO temp
+        if(true) {
+
             this.socket = socketIOClient(server);
 
             this.socket.on('connect', () => {
@@ -79,27 +83,10 @@ class Player extends React.Component {
         }
     };
 
-    returnLetter = (number) => {
-        switch(number) {
-            case 0: return 'A';
-            case 1: return 'B';
-            case 2: return 'C';
-            case 3: return 'D';
-            default: return '';
-        }
-    };
-
     render() {
         switch(this.props.game.state) {
             case 'LOADING_ROOM':
-                return(
-                    <div>
-                        room code: {this.props.game.roomCode}<br/>
-                        nick: {this.props.game.playerName}<br/>
-                        łączenie z pokojem...<br/>
-                        <Button variant={"primary"} onClick={() => this.props.history.push('/')}>Anuluj</Button>
-                    </div>
-                );
+                return(<LoadingRoom {...this.props}/>);
             case 'NICKNAME_IS_BUSY':
                 return(
                     <div>
@@ -129,9 +116,9 @@ class Player extends React.Component {
                                 this.state.selectedAnswer === this.state.correctAnswer ?
                                     'Odpowiedź poprawna! Zdobywasz punkty! Obserwuj komunikaty na ekranie hosta...'
                                     :
-                                    'Odpowiedź błędna :( Poprawna odpowiedź to: '+this.returnLetter(this.state.correctAnswer)+'. Obserwuj komunikaty na ekranie hosta...'
+                                    'Odpowiedź błędna :( Poprawna odpowiedź to: '+returnLetter(this.state.correctAnswer)+'. Obserwuj komunikaty na ekranie hosta...'
                                 :
-                                'Wybrano odpowiedź '+this.returnLetter(this.state.selectedAnswer)+'. Obserwuj komunikaty na ekranie hosta...'
+                                'Wybrano odpowiedź '+returnLetter(this.state.selectedAnswer)+'. Obserwuj komunikaty na ekranie hosta...'
                             :
                             'Dołączono. Obserwuj komunikaty na ekranie hosta...'
                         }

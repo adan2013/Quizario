@@ -18,7 +18,7 @@ class CenterBox extends Component {
                     this.props.cancel &&
                     <div className={"cancel-btn"}>
                         <Button variant={"secondary"} onClick={() => this.props.history.push('/')}>
-                            <CloseIcon/> Anuluj
+                            <CloseIcon/> {this.props.cancel}
                         </Button>
                     </div>
                 }
