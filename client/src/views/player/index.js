@@ -16,6 +16,7 @@ import {setHostingRoomAC, switchStateAC} from "../../actions/game";
 import {connect} from "react-redux";
 import {Button} from "react-bootstrap";
 import LoadingRoom from "./LoadingRoom";
+import NicknameIsBusy from "./NicknameIsBusy";
 
 class Player extends React.Component {
     constructor(props) {
@@ -28,7 +29,7 @@ class Player extends React.Component {
     }
 
     componentDidMount() {
-        this.props.switchState('LOADING_ROOM');
+        this.props.switchState('NICKNAME_IS_BUSY'); //LOADING_ROOM TODO temp
         //this.props.game.roomCode && this.props.game.playerName TODO temp
         if(true) {
 
@@ -88,14 +89,7 @@ class Player extends React.Component {
             case 'LOADING_ROOM':
                 return(<LoadingRoom {...this.props}/>);
             case 'NICKNAME_IS_BUSY':
-                return(
-                    <div>
-                        room code: {this.props.game.roomCode}<br/>
-                        nick: {this.props.game.playerName}<br/>
-                        WYBRANY NICK JUŻ ISTNIEJE W POKOJU! WYBIERZ INNY!<br/>
-                        <Button variant={"primary"} onClick={() => this.props.history.push('/')}>Powrót do menu</Button>
-                    </div>
-                );
+                return(<NicknameIsBusy {...this.props}/>);
             case 'ROOM_NOT_FOUND':
                 return(
                     <div>
