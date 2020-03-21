@@ -5,6 +5,7 @@ import {Row, Col, Container, Button, ButtonGroup, Form} from 'react-bootstrap'
 import CenterBox from "../../components/CenterBox";
 import './main.css'
 
+import logo from '../../assets/logo.svg'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import EditIcon from '@material-ui/icons/Edit';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
@@ -39,9 +40,7 @@ class Main extends React.Component {
                 <Container fluid>
                     <Row>
                         <Col xs={12}>
-                            <div className={"main-logo-text"}>
-                                Quizario
-                            </div>
+                            <img src={logo} className={"main-logo-text"}/>
                             <form>
                                 <Form.Control type={"text"}
                                               value={this.state.playerName}

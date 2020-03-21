@@ -1,6 +1,7 @@
 .main-logo-text {
-    font-size: 36px;
-    margin-bottom: 30px;
+    width: 400px;
+    max-width: 80%;
+    margin-bottom: 40px;
 }
 
 .main-textbox {
