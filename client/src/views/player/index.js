@@ -18,6 +18,7 @@ import {Button} from "react-bootstrap";
 import LoadingRoom from "./LoadingRoom";
 import NicknameIsBusy from "./NicknameIsBusy";
 import RoomNotFound from "./RoomNotFound";
+import Waiting from "./Waiting";
 
 class Player extends React.Component {
     constructor(props) {
@@ -30,7 +31,7 @@ class Player extends React.Component {
     }
 
     componentDidMount() {
-        this.props.switchState('ROOM_NOT_FOUND'); //LOADING_ROOM TODO temp
+        this.props.switchState('WAITING'); //LOADING_ROOM TODO temp
         //this.props.game.roomCode && this.props.game.playerName TODO temp
         if(true) {
 
@@ -94,26 +95,9 @@ class Player extends React.Component {
             case 'ROOM_NOT_FOUND':
                 return(<RoomNotFound {...this.props}/>);
             case 'WAITING':
-                return(
-                    <div>
-                        room code: {this.props.game.roomCode}<br/>
-                        nick: {this.props.game.playerName}<br/>
-                        title: {this.props.game.hostingRoom.title}<br/>
-                        {this.state.selectedAnswer != null ?
-                            this.state.correctAnswer != null ?
-                                this.state.selectedAnswer === this.state.correctAnswer ?
-                                    'Odpowiedź poprawna! Zdobywasz punkty! Obserwuj komunikaty na ekranie hosta...'
-                                    :
-                                    'Odpowiedź błędna :( Poprawna odpowiedź to: '+returnLetter(this.state.correctAnswer)+'. Obserwuj komunikaty na ekranie hosta...'
-                                :
-                                'Wybrano odpowiedź '+returnLetter(this.state.selectedAnswer)+'. Obserwuj komunikaty na ekranie hosta...'
-                            :
-                            'Dołączono. Obserwuj komunikaty na ekranie hosta...'
-                        }
-                            <br/>
-                        <Button variant={"primary"} onClick={() => this.props.history.push('/')}>Wyjdź z gry</Button>
-                    </div>
-                );
+                return(<Waiting {...this.props}
+                                selectedAnswer={this.state.selectedAnswer}
+                                correctAnswer={this.state.correctAnswer}/>);
             case 'QUESTION':
                 if(this.state.question){
                     return(
