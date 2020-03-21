@@ -19,6 +19,7 @@ import LoadingRoom from "./LoadingRoom";
 import NicknameIsBusy from "./NicknameIsBusy";
 import RoomNotFound from "./RoomNotFound";
 import Waiting from "./Waiting";
+import Question from "./Question";
 
 class Player extends React.Component {
     constructor(props) {
@@ -31,7 +32,7 @@ class Player extends React.Component {
     }
 
     componentDidMount() {
-        this.props.switchState('WAITING'); //LOADING_ROOM TODO temp
+        this.props.switchState('QUESTION'); //LOADING_ROOM TODO temp
         //this.props.game.roomCode && this.props.game.playerName TODO temp
         if(true) {
 
@@ -78,12 +79,8 @@ class Player extends React.Component {
         if(this.socket) this.socket.disconnect();
     }
 
-    selectAnswer = (number) => {
-        if(this.state.question) {
-            this.setState({selectedAnswer: number});
-            this.socket.emit(answerSelected, this.props.game.roomCode, this.props.game.playerName, number);
-            this.props.switchState('WAITING');
-        }
+    selected = (number) => {
+        this.setState({selectedAnswer: number});
     };
 
     render() {
@@ -99,30 +96,9 @@ class Player extends React.Component {
                                 selectedAnswer={this.state.selectedAnswer}
                                 correctAnswer={this.state.correctAnswer}/>);
             case 'QUESTION':
-                if(this.state.question){
-                    return(
-                        <div>
-                            room code: {this.props.game.roomCode}<br/>
-                            nick: {this.props.game.playerName}<br/>
-                            title: {this.props.game.hostingRoom.title}<br/>
-                            Odpowiedz na pytanie:<br/><br/>
-                            Pytanie: {this.state.question.question}<br/>
-                            A: {this.state.question.answers[0]}<br/>
-                            B: {this.state.question.answers[1]}<br/>
-                            C: {this.state.question.answers[2]}<br/>
-                            D: {this.state.question.answers[3]}<br/>
-                            <br/>
-                            <Button variant={"primary"} onClick={() => this.selectAnswer(0)}>Wybierz A</Button>
-                            <Button variant={"primary"} onClick={() => this.selectAnswer(1)}>Wybierz B</Button>
-                            <Button variant={"primary"} onClick={() => this.selectAnswer(2)}>Wybierz C</Button>
-                            <Button variant={"primary"} onClick={() => this.selectAnswer(3)}>Wybierz D</Button>
-                            <br/><br/>
-                            <Button variant={"danger"} onClick={() => this.props.history.push('/')}>Wyjdź z gry</Button>
-                        </div>
-                    );
-                }else{
-                    return(<span/>);
-                }
+                return(<Question {...this.props}
+                                 socket={this.socket}
+                                 selected={this.selected}/>);
             case 'FINAL':
                 let stats = this.state.stats.slice();
                 stats.sort((a, b) => {
