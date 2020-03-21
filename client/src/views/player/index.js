@@ -95,6 +95,7 @@ class Player extends React.Component {
             case 'QUESTION':
                 return(<Question {...this.props}
                                  socket={this.socket}
+                                 question={this.state.question}
                                  selected={this.selected}/>);
             case 'FINAL':
                 return(<Final {...this.props}
