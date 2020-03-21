@@ -17,6 +17,7 @@ import {connect} from "react-redux";
 import {Button} from "react-bootstrap";
 import LoadingRoom from "./LoadingRoom";
 import NicknameIsBusy from "./NicknameIsBusy";
+import RoomNotFound from "./RoomNotFound";
 
 class Player extends React.Component {
     constructor(props) {
@@ -29,7 +30,7 @@ class Player extends React.Component {
     }
 
     componentDidMount() {
-        this.props.switchState('NICKNAME_IS_BUSY'); //LOADING_ROOM TODO temp
+        this.props.switchState('ROOM_NOT_FOUND'); //LOADING_ROOM TODO temp
         //this.props.game.roomCode && this.props.game.playerName TODO temp
         if(true) {
 
@@ -91,14 +92,7 @@ class Player extends React.Component {
             case 'NICKNAME_IS_BUSY':
                 return(<NicknameIsBusy {...this.props}/>);
             case 'ROOM_NOT_FOUND':
-                return(
-                    <div>
-                        room code: {this.props.game.roomCode}<br/>
-                        nick: {this.props.game.playerName}<br/>
-                        POKÓJ NIE ZOSTAŁ ZNALEZIONY!<br/>
-                        <Button variant={"primary"} onClick={() => this.props.history.push('/')}>Powrót do menu</Button>
-                    </div>
-                );
+                return(<RoomNotFound {...this.props}/>);
             case 'WAITING':
                 return(
                     <div>
