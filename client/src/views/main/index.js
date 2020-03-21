@@ -40,7 +40,7 @@ class Main extends React.Component {
                 <Container fluid>
                     <Row>
                         <Col xs={12}>
-                            <img src={logo} className={"main-logo-text"}/>
+                            <img src={logo} className={"main-logo-text"} alt={"quizario logo"}/>
                             <form>
                                 <Form.Control type={"text"}
                                               value={this.state.playerName}
