@@ -1,11 +1,13 @@
-.main-logo {
-    text-align: center;
+.main-logo-text {
+    font-size: 36px;
+    margin-bottom: 30px;
 }
 
-.main-buttons {
-    text-align: right;
+.main-textbox {
+    margin: 10px auto;
+    max-width: 300px;
 }
 
-.main-btn {
-
+.main-footer-btn {
+    margin: 50px auto 20px auto;
 }

@@ -1,8 +1,13 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {switchStateAC, setPlayerConfigAC} from '../../actions/game'
-import {Button, Form} from 'react-bootstrap'
+import {Row, Col, Container, Button, ButtonGroup, Form} from 'react-bootstrap'
+import CenterBox from "../../components/CenterBox";
 import './main.css'
+
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import EditIcon from '@material-ui/icons/Edit';
+import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 
 class Main extends React.Component {
     constructor(props) {
@@ -13,10 +18,13 @@ class Main extends React.Component {
         };
     }
 
-    componentDidMount() {
-        this.props.setPlayerConfig('', '');
-        this.props.switchState('');
-    }
+    changeRoomCode = (e) => {
+        let val = e.target.value;
+        if(val.length > 6) val = val.substring(0, 6);
+        this.setState({
+            roomCode: val
+        });
+    };
 
     startGame = () => {
         if(this.state.roomCode !== '') {
@@ -26,30 +34,49 @@ class Main extends React.Component {
     };
 
     render() {
-        return(
-            <div>
-                <Button color={"primary"} onClick={() => this.props.history.push('/host')}>
-                    Stwórz nową grę
-                </Button>
-                <Button color={"primary"} onClick={() => this.props.history.push('/editor')}>
-                    Edytor pytań
-                </Button>
-                <form>
-                    <Form.Control type={"text"}
-                                  value={this.state.playerName}
-                                  onChange={(e) => this.setState({playerName: e.target.value})}
-                                  placeholder={"Nick gracza"}
-                                  maxLength={"15"}/>
-                    <Form.Control type={"text"}
-                                  value={this.state.roomCode}
-                                  onChange={(e) => this.setState({roomCode: e.target.value})}
-                                  placeholder={"Kod dostępu"}
-                                  maxLength={"6"}/>
-                    <Button type={"submit"} variant={"primary"} onClick={this.startGame} disabled={this.state.roomCode.length !== 6 && this.state.playerName === ''}>
-                        Dołącz do gry
-                    </Button>
-                </form>
-            </div>
+        return (
+            <CenterBox>
+                <Container fluid>
+                    <Row>
+                        <Col xs={12}>
+                            <div className={"main-logo-text"}>
+                                Quizario
+                            </div>
+                            <form>
+                                <Form.Control type={"text"}
+                                              value={this.state.playerName}
+                                              onChange={(e) => this.setState({playerName: e.target.value})}
+                                              placeholder={"Nick gracza"}
+                                              maxLength={"25"}
+                                              className={"main-textbox"}/>
+                                <Form.Control type={"number"}
+                                              value={this.state.roomCode}
+                                              onChange={this.changeRoomCode}
+                                              placeholder={"6-cyfrowy kod dostępu"}
+                                              className={"main-textbox"}/>
+                                <Button type={"submit"}
+                                        variant={"secondary"}
+                                        onClick={this.startGame}
+                                        disabled={this.state.roomCode.length !== 6 || this.state.playerName === ''}>
+                                    <PlayCircleOutlineIcon/> Dołącz do gry
+                                </Button>
+                            </form>
+                        </Col>
+                        <Col xs={12}>
+                            <ButtonGroup className={"main-footer-btn"}>
+                                <Button variant={"secondary"} onClick={() => this.props.history.push('/host')}>
+                                    <AddCircleOutlineIcon fontSize={"large"}/><br/>
+                                    Stwórz nową grę
+                                </Button>
+                                <Button variant={"secondary"} onClick={() => this.props.history.push('/editor')}>
+                                    <EditIcon fontSize={"large"}/><br/>
+                                    Edytor pytań
+                                </Button>
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
+                </Container>
+            </CenterBox>
         );
     }
 }

@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&display=swap');
+
+.outer {
+    display: table;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    color: #fff;
+    font-size: 22px;
+    font-family: 'Comfortaa', 'Segoe UI', sans-serif;
+    background: rgb(9,56,121) !important;
+    background: linear-gradient(45deg, rgba(9,56,121,1) 13%, rgba(0,212,255,1) 100%) !important;
+}
+
+.middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.inner {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    max-width: 1000px;
+    width: 100vw;
+}

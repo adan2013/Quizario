@@ -1,7 +1,6 @@
 import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
 
 import Main from './views/main'
 import Host from './views/host'
