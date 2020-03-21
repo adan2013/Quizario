@@ -26,3 +26,23 @@
     max-width: 1000px;
     width: 100vw;
 }
+
+.cancel-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.watermark-logo {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding-bottom: 14px;
+    opacity: 0.4;
+}
+
+.watermark-logo img {
+    height: 25px;
+}
