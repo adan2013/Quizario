@@ -28,7 +28,8 @@ class WaitingForStart extends Component {
                             <Col md={4} sm={12}>
                                 <div className={"qr-code hide-qr"}>
                                     <QRCode value={client + "/#/?code=" + this.props.game.hostingRoom.roomCode}
-                                            size={'160'}
+                                            size={250}
+                                            renderas={'svg'}
                                             includeMargin/>
                                 </div>
                             </Col>
@@ -37,33 +38,6 @@ class WaitingForStart extends Component {
                 </div>
             </CenterBox>
         );
-
-
-
-
-
-
-        // return(
-        //     <div>
-        //         title: {this.props.game.hostingRoom.title}<br/>
-        //         przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/>
-        //         Ilość podłączonych graczy: {this.state.connectedUsers}<br/>
-        //         Pokój utworzony. Oczekiwanie na graczy...<br/>
-        //         <Button variant={"danger"} onClick={() => {
-        //             this.socket.emit(closeRoom, this.props.game.hostingRoom.roomCode);
-        //             this.props.history.push('/');
-        //         }}>Anuluj grę</Button>
-        //         <Button variant={"primary"} onClick={() => {
-        //             this.nextQuestion(0);
-        //         }}>Uruchom grę i pokaż pytanie</Button>
-        //     </div>
-        // );
-
-
-
-
-
-
     }
 }
 
