@@ -33,6 +33,13 @@
     left: 10px;
 }
 
+.room-header {
+    text-align: right;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+
 .watermark-logo {
     position: fixed;
     left: 50%;

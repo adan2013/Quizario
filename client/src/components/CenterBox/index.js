@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Button} from "react-bootstrap";
+import {closeRoom} from "../../connection/config";
 import './CenterBox.css'
 
 import logo from '../../assets/logo.svg'
@@ -17,9 +18,21 @@ class CenterBox extends Component {
                 {
                     this.props.cancel &&
                     <div className={"cancel-btn"}>
-                        <Button variant={"secondary"} onClick={() => this.props.history.push('/')}>
+                        <Button variant={"secondary"} onClick={() => {
+                            if(this.props.closeRoomSignal) {
+                                this.props.socket.emit(closeRoom, this.props.game.hostingRoom.roomCode);
+                            }else{
+                                this.props.history.push('/');
+                            }
+                        }}>
                             <CloseIcon/> {this.props.cancel}
                         </Button>
+                    </div>
+                }
+                {
+                    this.props.roomHeader &&
+                    <div className={"room-header"}>
+                        {this.props.game.hostingRoom.roomCode}
                     </div>
                 }
                 {
