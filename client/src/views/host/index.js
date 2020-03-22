@@ -4,7 +4,6 @@ import {connect} from "react-redux";
 import socketIOClient from "socket.io-client";
 import {
     server,
-    createNewRoom,
     roomCreated,
     userCountUpdate,
     newQuestion,
@@ -20,8 +19,6 @@ import WaitingForCode from "./WaitingForCode";
 import WaitingForStart from "./WaitingForStart";
 import Question from "./Question";
 import Final from "./Final";
-
-import testQuestions from '../../testQuestions'
 
 class Host extends React.Component {
     constructor(props) {
@@ -39,20 +36,9 @@ class Host extends React.Component {
     }
 
     componentDidMount() {
+        this.props.switchState('CREATING');
+
         this.socket = socketIOClient(server);
-
-        const data = {
-            title: 'quiz testowy',
-            timeLimit: 0,
-            questionLimit: 0,
-            randomOrder: false
-        };
-        this.props.setHostingRoom(data); //TODO temp
-        this.setState({questions: testQuestions});
-        this.socket.emit(createNewRoom, data); //TODO temp
-        this.props.switchState('WAITING_FOR_CODE'); //CREATING TODO temp
-
-
 
         this.socket.on(roomCreated, (code) => {
             this.props.setHostingRoom({...this.props.game.hostingRoom, roomCode: code});
