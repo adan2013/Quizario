@@ -159,12 +159,14 @@ class Host extends React.Component {
                                  socket={this.socket}
                                  answerCount={this.state.answerCount}
                                  questionIndex={this.state.questionIndex}
+                                 isLastQuestion={this.isLastQuestion()}
                                  lastIndexNumber={this.lastIndexNumber()}
                                  question={this.state.questions[this.state.questionIndex]}
                                  questionIsOpen={this.state.questionIsOpen}
                                  questionTab={this.state.questionTab}
                                  changeTab={this.changeTab}
-                                 nextButton={this.nextButton}/>);
+                                 nextButton={this.nextButton}
+                                 answerStats={this.state.answerStats}/>);
             case 'FINAL':
                 let rank = this.state.generalRanking.slice();
                 let alpha = this.state.generalRanking.slice();

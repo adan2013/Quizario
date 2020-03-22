@@ -27,6 +27,10 @@
     margin: 10px;
 }
 
+.question-answer-correct {
+    background-color: var(--green);
+}
+
 .question-counter {
     margin-left: 10px;
     text-align: left;
@@ -35,6 +39,11 @@
 .question-answers-counter {
     margin-right: 10px;
     text-align: right;
+}
+
+.question-progress {
+    margin-top: 5px;
+    margin-right: -40px;
 }
 
 .question-control-buttons {

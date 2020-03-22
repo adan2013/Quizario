@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import CenterBox from "../../components/CenterBox";
-import {Button, Container, Col, Row, ButtonGroup} from "react-bootstrap";
+import {Button, Container, Col, Row, ButtonGroup, ProgressBar} from "react-bootstrap";
 import './Question.css'
 import {
     answerStatsRequest,
@@ -25,6 +25,18 @@ class Question extends Component {
         }
     }
 
+    correctGreenBox = (answer) => {
+        return(this.props.questionTab === 1 && this.props.question.correct === answer ? ' question-answer-correct' : '');
+    };
+
+    StatPrograssBar = ({answer}) => {
+        let value = 0;
+        if(this.props.answerCount !== 0 && this.props.answerStats) {
+            value = Math.round(this.props.answerStats[answer] * 100 / this.props.answerCount);
+        }
+        return(this.props.questionTab === 2 && <ProgressBar now={value} label={value + '%'} className={"question-progress"}/>);
+    };
+
     QuestionGrid = () => {
         return(
             <div>
@@ -48,27 +60,31 @@ class Question extends Component {
                         <div className={"question-question"}>{this.props.question.question}</div>
                     </Col>
                     <Col md={6} sm={12}>
-                        <div className={"question-answer"}>
+                        <div className={"question-answer" + this.correctGreenBox(0)}>
                             <div className={"question-answer-letter"}>A</div>
                             {this.props.question.answers[0]}
+                            <this.StatPrograssBar answer={0}/>
                         </div>
                     </Col>
                     <Col md={6} sm={12}>
-                        <div className={"question-answer"}>
+                        <div className={"question-answer" + this.correctGreenBox(1)}>
                             <div className={"question-answer-letter"}>B</div>
                             {this.props.question.answers[1]}
+                            <this.StatPrograssBar answer={1}/>
                         </div>
                     </Col>
                     <Col md={6} sm={12}>
-                        <div className={"question-answer"}>
+                        <div className={"question-answer" + this.correctGreenBox(2)}>
                             <div className={"question-answer-letter"}>C</div>
                             {this.props.question.answers[2]}
+                            <this.StatPrograssBar answer={2}/>
                         </div>
                     </Col>
                     <Col md={6} sm={12}>
-                        <div className={"question-answer"}>
+                        <div className={"question-answer" + this.correctGreenBox(3)}>
                             <div className={"question-answer-letter"}>D</div>
                             {this.props.question.answers[3]}
+                            <this.StatPrograssBar answer={3}/>
                         </div>
                     </Col>
                 </Row>
@@ -80,19 +96,19 @@ class Question extends Component {
         return(
             <div className={"question-control-buttons"}>
                 <ButtonGroup>
-                    <Button variant={"secondary"} disabled={this.props.questionIsOpen} onClick={() => {
+                    <Button variant={"secondary"} disabled={this.props.questionIsOpen || this.props.questionTab === 1} onClick={() => {
                         this.props.changeTab(1)
                     }}>
                         <CheckBoxIcon fontSize={"large"}/><br/>Poprawna
                     </Button>
-                    <Button variant={"secondary"} disabled={this.props.questionIsOpen} onClick={() => {
-                        this.props.changeTab(1);
+                    <Button variant={"secondary"} disabled={this.props.questionIsOpen || this.props.questionTab === 2} onClick={() => {
+                        this.props.changeTab(2);
                         this.props.socket.emit(answerStatsRequest, this.props.game.hostingRoom.roomCode);
                     }}>
                         <AssessmentIcon fontSize={"large"}/><br/>Statystyki
                     </Button>
-                    <Button variant={"secondary"} disabled={this.props.questionIsOpen} onClick={() => {
-                        this.props.changeTab(1);
+                    <Button variant={"secondary"} disabled={this.props.questionIsOpen || this.props.questionTab === 3} onClick={() => {
+                        this.props.changeTab(3);
                         this.props.socket.emit(generalRankingRequest, this.props.game.hostingRoom.roomCode);
                     }}>
                         <ViewListIcon fontSize={"large"}/><br/>Ranking
