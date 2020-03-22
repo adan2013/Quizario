@@ -22,6 +22,12 @@ class Main extends React.Component {
     componentDidMount() {
         this.props.switchState('');
         this.props.setPlayerConfig('', '');
+        const search = this.props.location.search;
+        const params = new URLSearchParams(search);
+        const code = params.get('code');
+        if(code && !isNaN(code) && code.length === 6) {
+            this.setState({roomCode: code});
+        }
     }
 
     changeRoomCode = (e) => {
