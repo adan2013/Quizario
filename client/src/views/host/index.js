@@ -4,6 +4,7 @@ import {connect} from "react-redux";
 import socketIOClient from "socket.io-client";
 import {
     server,
+    createNewRoom,
     closeRoom,
     roomCreated,
     userCountUpdate,
@@ -21,11 +22,15 @@ import Creating from "./Creating";
 import WaitingForCode from "./WaitingForCode";
 import WaitingForStart from "./WaitingForStart";
 
+
+import testQuestions from '../../testQuestions'
+import Question from "./Question";
+
 class Host extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            connectedUsers: 0,
+            connectedUsers: 0, //TODO connected users in waiting for start
             answerCount: 0,
             questions: [],
             questionIndex: 0,
@@ -37,17 +42,20 @@ class Host extends React.Component {
     }
 
     componentDidMount() {
-        /*const data = {
+        this.socket = socketIOClient(server);
+
+        const data = {
             title: 'quiz testowy',
             timeLimit: 0,
             questionLimit: 0,
-            randomOrder: false,
-            roomCode: '347954'
-        };*/
-        //this.props.setHostingRoom(data); //TODO temp
-        this.props.switchState('CREATING'); //CREATING TODO temp
+            randomOrder: false
+        };
+        this.props.setHostingRoom(data); //TODO temp
+        this.setState({questions: testQuestions});
+        this.socket.emit(createNewRoom, data); //TODO temp
+        this.props.switchState('WAITING_FOR_CODE'); //CREATING TODO temp
 
-        this.socket = socketIOClient(server);
+
 
         this.socket.on(roomCreated, (code) => {
             this.props.setHostingRoom({...this.props.game.hostingRoom, roomCode: code});
@@ -80,6 +88,15 @@ class Host extends React.Component {
         this.socket.disconnect();
     }
 
+    nextButton = () => {
+        if(this.state.questionIsOpen) {
+            this.setState({questionIsOpen: false});
+            this.socket.emit(closeQuestion, this.props.game.hostingRoom.roomCode, this.state.questions[this.state.questionIndex]);
+        }else{
+            this.nextQuestion(this.state.questionIndex + 1);
+        }
+    };
+
     nextQuestion = (index) => {
         this.setState({
             questionIndex: index,
@@ -91,51 +108,6 @@ class Host extends React.Component {
         this.socket.emit(newQuestion, this.props.game.hostingRoom.roomCode, this.state.questions[index]);
     };
 
-    returnLetter = (number) => {
-        switch(number) {
-            case 0: return 'A';
-            case 1: return 'B';
-            case 2: return 'C';
-            case 3: return 'D';
-            default: return '';
-        }
-    };
-
-    ControlButtons = () => {
-        return(
-            <div>
-                <Button variant={"danger"} disabled={this.state.questionIsOpen} onClick={() => {
-                    this.socket.emit(closeRoom, this.props.game.hostingRoom.roomCode);
-                }}>Zakończ grę</Button>
-                <Button variant={"warning"} disabled={this.state.questionIsOpen || this.state.questionTab === 1} onClick={() => {
-                    this.setState({questionTab: 1})
-                }}>Poprawna odp.</Button>
-                <Button variant={"warning"} disabled={this.state.questionIsOpen || this.state.questionTab === 2} onClick={() => {
-                    this.setState({
-                        questionTab: 2,
-                        answerStats: null
-                    });
-                    this.socket.emit(answerStatsRequest, this.props.game.hostingRoom.roomCode);
-                }}>Statystyki tego pytania</Button>
-                <Button variant={"warning"} disabled={this.state.questionIsOpen || this.state.questionTab === 3} onClick={() => {
-                    this.setState({
-                        questionTab: 3,
-                        generalRanking: null
-                    });
-                    this.socket.emit(generalRankingRequest, this.props.game.hostingRoom.roomCode);
-                }}>Ranking ogólny gry</Button>
-                <Button variant={"primary"} disabled={this.isLastQuestion() && !this.state.questionIsOpen} onClick={() => {
-                    if(this.state.questionIsOpen) {
-                        this.setState({questionIsOpen: false});
-                        this.socket.emit(closeQuestion, this.props.game.hostingRoom.roomCode, this.state.questions[this.state.questionIndex]);
-                    }else{
-                        this.nextQuestion(this.state.questionIndex + 1);
-                    }
-                }}>{this.state.questionIsOpen ? 'Zakończ odpowiadanie' : 'Następne pytanie'}</Button>
-            </div>
-        );
-    };
-
     isLastQuestion = () => {
         return this.state.questionIndex + 1 === this.lastIndexNumber();
     };
@@ -145,6 +117,28 @@ class Host extends React.Component {
             return this.state.questions.length;
         }else{
             return Math.min(this.props.game.hostingRoom.questionLimit, this.state.questions.length);
+        }
+    };
+
+    changeTab = (tab) => {
+        switch (tab) {
+            case 1:
+                this.setState({
+                   questionTab: 1
+                });
+                break;
+            case 2:
+                this.setState({
+                    questionTab: 2,
+                    answerStats: null
+                });
+                break;
+            case 3:
+                this.setState({
+                    questionTab: 3,
+                    generalRanking: null
+                });
+                break;
         }
     };
 
@@ -161,113 +155,16 @@ class Host extends React.Component {
                                         socket={this.socket}
                                         nextQuestion={(i) => this.nextQuestion(i)}/>);
             case 'QUESTION':
-                switch (this.state.questionTab) {
-                    case 1: //correct answer
-                        return (
-                            <div>
-                                licznik: {this.state.questionIndex + 1}/{this.lastIndexNumber()}<br/>
-                                title: {this.props.game.hostingRoom.title}<br/>
-                                przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
-                                Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
-                                Poprawną odpowiedzią było: {this.returnLetter(this.state.questions[this.state.questionIndex].correct)}<br/>
-                                Liczba udzielonych odpowiedzi: {this.state.answerCount}<br/>
-                                <this.ControlButtons/>
-                            </div>
-                        );
-                    case 2: //question stats
-                        if(this.state.answerStats) {
-                            let p1, p2, p3, p4;
-                            if(this.state.answerCount === 0) {
-                                p1 = 0;
-                                p2 = 0;
-                                p3 = 0;
-                                p4 = 0;
-                            }else{
-                                p1 = Math.round(this.state.answerStats[0] * 100 / this.state.answerCount);
-                                p2 = Math.round(this.state.answerStats[1] * 100 / this.state.answerCount);
-                                p3 = Math.round(this.state.answerStats[2] * 100 / this.state.answerCount);
-                                p4 = Math.round(this.state.answerStats[3] * 100 / this.state.answerCount);
-                            }
-                            return (
-                                <div>
-                                    licznik: {this.state.questionIndex + 1}/{this.lastIndexNumber()}<br/>
-                                    title: {this.props.game.hostingRoom.title}<br/>
-                                    przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
-                                    Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
-                                    Liczba głosów na odpowiedź A: {this.state.answerStats[0]} {p1}%<br/>
-                                    Liczba głosów na odpowiedź B: {this.state.answerStats[1]} {p2}%<br/>
-                                    Liczba głosów na odpowiedź C: {this.state.answerStats[2]} {p3}%<br/>
-                                    Liczba głosów na odpowiedź D: {this.state.answerStats[3]} {p4}%<br/>
-                                    Liczba udzielonych odpowiedzi: {this.state.answerCount}<br/>
-                                    <this.ControlButtons/>
-                                </div>
-                            );
-                        }else{
-                            return (
-                                <div>
-                                    licznik: {this.state.questionIndex + 1}/{this.lastIndexNumber()}<br/>
-                                    title: {this.props.game.hostingRoom.title}<br/>
-                                    przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
-                                    Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
-                                    POBIERANIE STATYSTYK...<br/>
-                                    Liczba udzielonych odpowiedzi: {this.state.answerCount}<br/>
-                                    <this.ControlButtons/>
-                                </div>
-                            );
-                        }
-                    case 3: //general rank
-                        if(this.state.generalRanking) {
-                            let rank = this.state.generalRanking.slice();
-                            rank.sort((a, b) => {
-                                if(a.points < b.points) return 1;
-                                if(a.points > b.points) return -1;
-                                return 0;
-                            });
-                            return (
-                                <div>
-                                    licznik: {this.state.questionIndex + 1}/{this.lastIndexNumber()}<br/>
-                                    title: {this.props.game.hostingRoom.title}<br/>
-                                    przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
-                                    Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
-                                    Ranking generalny:<br/>
-                                    {
-                                        rank.map(item => {
-                                            return <div key={item.nickname}>{item.nickname + ' - punktów ' + item.points}</div>;
-                                        })
-                                    }
-                                    Liczba udzielonych odpowiedzi: {this.state.answerCount}<br/>
-                                    <this.ControlButtons/>
-                                </div>
-                            );
-                        }else{
-                            return (
-                                <div>
-                                    licznik: {this.state.questionIndex + 1}/{this.lastIndexNumber()}<br/>
-                                    title: {this.props.game.hostingRoom.title}<br/>
-                                    przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
-                                    Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
-                                    POBIERANIE RANKINGU GENERALNEGO...<br/>
-                                    Liczba udzielonych odpowiedzi: {this.state.answerCount}<br/>
-                                    <this.ControlButtons/>
-                                </div>
-                            );
-                        }
-                    default:
-                        return (
-                            <div>
-                                licznik: {this.state.questionIndex + 1}/{this.lastIndexNumber()}<br/>
-                                title: {this.props.game.hostingRoom.title}<br/>
-                                przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/><br/>
-                                Pytanie: {this.state.questions[this.state.questionIndex].question}<br/>
-                                A: {this.state.questions[this.state.questionIndex].answers[0]}<br/>
-                                B: {this.state.questions[this.state.questionIndex].answers[1]}<br/>
-                                C: {this.state.questions[this.state.questionIndex].answers[2]}<br/>
-                                D: {this.state.questions[this.state.questionIndex].answers[3]}<br/>
-                                Liczba udzielonych odpowiedzi: {this.state.answerCount}<br/>
-                                <this.ControlButtons/>
-                            </div>
-                        );
-                }
+                return(<Question {...this.props}
+                                 socket={this.socket}
+                                 answerCount={this.state.answerCount}
+                                 questionIndex={this.state.questionIndex}
+                                 lastIndexNumber={this.lastIndexNumber()}
+                                 question={this.state.questions[this.state.questionIndex]}
+                                 questionIsOpen={this.state.questionIsOpen}
+                                 questionTab={this.state.questionTab}
+                                 changeTab={this.changeTab}
+                                 nextButton={this.nextButton}/>);
             case 'FINAL':
                 let rank = this.state.generalRanking.slice();
                 let alpha = this.state.generalRanking.slice();
