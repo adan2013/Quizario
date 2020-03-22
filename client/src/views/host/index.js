@@ -14,14 +14,14 @@ import {
     generalRankingResponse,
     gameCompleted
 } from "../../connection/config";
-import {Button} from "react-bootstrap";
+
 import Creating from "./Creating";
 import WaitingForCode from "./WaitingForCode";
 import WaitingForStart from "./WaitingForStart";
-
+import Question from "./Question";
+import Final from "./Final";
 
 import testQuestions from '../../testQuestions'
-import Question from "./Question";
 
 class Host extends React.Component {
     constructor(props) {
@@ -170,40 +170,8 @@ class Host extends React.Component {
                                  answerStats={this.state.answerStats}
                                  generalRanking={this.state.generalRanking}/>);
             case 'FINAL':
-                let rank = this.state.generalRanking.slice();
-                let alpha = this.state.generalRanking.slice();
-                rank.sort((a, b) => {
-                    if(a.points < b.points) return 1;
-                    if(a.points > b.points) return -1;
-                    return 0;
-                });
-                alpha.sort((a, b) => {
-                    const nameA = a.nickname.toUpperCase();
-                    const nameB = b.nickname.toUpperCase();
-                    return (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;
-                });
-                return (
-                    <div>
-                        title: {this.props.game.hostingRoom.title}<br/>
-                        przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}
-                        <br/><br/>
-                        Ranking generalny:<br/>
-                        {
-                            rank.map(item => {
-                                return <div key={item.nickname}>{item.nickname + ' - punktów ' + item.points}</div>;
-                            })
-                        }
-                        <br/><br/>
-                        Alfabetyczna lista graczy:<br/>
-                        {
-                            alpha.map(item => {
-                                return <div key={item.nickname}>{item.nickname + ' - punktów ' + item.points}</div>;
-                            })
-                        }
-                        <br/><br/>
-                        <Button variant={"primary"} onClick={() => this.props.history.push('/')}>Powrót do menu</Button>
-                    </div>
-                );
+                return(<Final {...this.props}
+                              generalRanking={this.state.generalRanking}/>);
             default:
                 return(<span>BRAK WIDOKU</span>);
         }
