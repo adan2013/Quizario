@@ -1,0 +1,35 @@
+.keyboard-left-column {
+    float: right;
+}
+
+.keyboard-button {
+    display: block;
+    margin: 20px 10px;
+    height: 35vw;
+    width: 35vw;
+    max-height: 160px;
+    max-width: 160px;
+    background-color: rgba(108, 117, 125, .65);
+}
+
+.keyboard-pc .keyboard-button {
+    margin: 20px auto;
+}
+
+.keyboard-button img {
+    height: 40%;
+}
+
+.keyboard-pc {
+    display: none;
+}
+
+.question-box {
+    display: inline-block !important;
+    text-align: center;
+}
+
+@media screen and (min-width: 768px) {
+    .keyboard-pc { display: flex }
+    .keyboard-mobile { display: none }
+}
