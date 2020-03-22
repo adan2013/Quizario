@@ -5,15 +5,12 @@ import socketIOClient from "socket.io-client";
 import {
     server,
     createNewRoom,
-    closeRoom,
     roomCreated,
     userCountUpdate,
     newQuestion,
     closeQuestion,
     answerCountUpdate,
-    answerStatsRequest,
     answerStatsResponse,
-    generalRankingRequest,
     generalRankingResponse,
     gameCompleted
 } from "../../connection/config";
@@ -139,6 +136,10 @@ class Host extends React.Component {
                     generalRanking: null
                 });
                 break;
+            default:
+                this.setState({
+                    questionTab: 0
+                });
         }
     };
 
@@ -166,7 +167,8 @@ class Host extends React.Component {
                                  questionTab={this.state.questionTab}
                                  changeTab={this.changeTab}
                                  nextButton={this.nextButton}
-                                 answerStats={this.state.answerStats}/>);
+                                 answerStats={this.state.answerStats}
+                                 generalRanking={this.state.generalRanking}/>);
             case 'FINAL':
                 let rank = this.state.generalRanking.slice();
                 let alpha = this.state.generalRanking.slice();
