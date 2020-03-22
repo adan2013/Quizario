@@ -88,9 +88,6 @@ class Question extends Component {
             <CenterBox logo cancel={"Wyjdź"} {...this.props}>
                 <div className={"message-box"}>
                     Odpowiedz na pytanie:<br/>
-                    <div className={"keyboard-pc question-box"}>
-                        {this.props.question ? this.props.question.question : <span/>}
-                    </div>
                     <Container fluid>
                         <this.Keyboard/>
                     </Container>
