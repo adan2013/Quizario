@@ -21,6 +21,18 @@ class Creating extends Component {
         }
     }
 
+    shuffle = (array) => {
+        let currentIndex = array.length, temporaryValue, randomIndex;
+        while (0 !== currentIndex) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+        return array;
+    };
+
     createRoom = () => {
         const data = {
             title: this.state.title,
@@ -30,9 +42,7 @@ class Creating extends Component {
         };
         let q = testQuestions;
         if(this.state.randomOrder) this.shuffle(q);
-        this.setState({
-            questions: q
-        });
+        this.props.questionList(q);
         this.props.setHostingRoom(data);
         this.props.switchState('WAITING_FOR_CODE');
         this.props.socket.emit(createNewRoom, data);

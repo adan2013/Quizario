@@ -19,6 +19,11 @@ class Main extends React.Component {
         };
     }
 
+    componentDidMount() {
+        this.props.switchState('');
+        this.props.setPlayerConfig('', '');
+    }
+
     changeRoomCode = (e) => {
         let val = e.target.value;
         if(val.length > 6) val = val.substring(0, 6);

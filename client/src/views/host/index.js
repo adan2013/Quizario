@@ -5,7 +5,6 @@ import socketIOClient from "socket.io-client";
 import {
     server,
     closeRoom,
-    createNewRoom,
     roomCreated,
     userCountUpdate,
     newQuestion,
@@ -17,9 +16,10 @@ import {
     generalRankingResponse,
     gameCompleted
 } from "../../connection/config";
-import {Button, Form} from "react-bootstrap";
-import testQuestions from '../../testQuestions'
+import {Button} from "react-bootstrap";
 import Creating from "./Creating";
+import WaitingForCode from "./WaitingForCode";
+import WaitingForStart from "./WaitingForStart";
 
 class Host extends React.Component {
     constructor(props) {
@@ -37,7 +37,15 @@ class Host extends React.Component {
     }
 
     componentDidMount() {
-        this.props.switchState('CREATING');
+        /*const data = {
+            title: 'quiz testowy',
+            timeLimit: 0,
+            questionLimit: 0,
+            randomOrder: false,
+            roomCode: '347954'
+        };*/
+        //this.props.setHostingRoom(data); //TODO temp
+        this.props.switchState('CREATING'); //CREATING TODO temp
 
         this.socket = socketIOClient(server);
 
@@ -71,18 +79,6 @@ class Host extends React.Component {
     componentWillUnmount() {
         this.socket.disconnect();
     }
-
-    shuffle = (array) => {
-        let currentIndex = array.length, temporaryValue, randomIndex;
-        while (0 !== currentIndex) {
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex -= 1;
-            temporaryValue = array[currentIndex];
-            array[currentIndex] = array[randomIndex];
-            array[randomIndex] = temporaryValue;
-        }
-        return array;
-    };
 
     nextQuestion = (index) => {
         this.setState({
@@ -145,10 +141,10 @@ class Host extends React.Component {
     };
 
     lastIndexNumber = () => {
-        if(this.state.questionLimit === '0') {
+        if(this.props.game.hostingRoom.questionLimit === 0) {
             return this.state.questions.length;
         }else{
-            return Math.min(parseInt(this.state.questionLimit), this.state.questions.length);
+            return Math.min(this.props.game.hostingRoom.questionLimit, this.state.questions.length);
         }
     };
 
@@ -156,31 +152,14 @@ class Host extends React.Component {
         switch(this.props.game.state) {
             case 'CREATING':
                 return(<Creating {...this.props}
-                                 socket={this.socket}/>);
+                                 socket={this.socket}
+                                 questionList={(q) => this.setState({questions: q})}/>);
             case 'WAITING_FOR_CODE':
-                return(
-                    <div>
-                        title: {this.props.game.title}<br/>
-                        Oczekiwanie na wygenerowanie kodu...<br/>
-                        <Button variant={"primary"} onClick={() => this.props.history.push('/')}>Anuluj</Button>
-                    </div>
-                );
+                return(<WaitingForCode {...this.props}/>);
             case 'WAITING_FOR_START':
-                return(
-                    <div>
-                        title: {this.props.game.hostingRoom.title}<br/>
-                        przydzielony kod dostępu: {this.props.game.hostingRoom.roomCode}<br/>
-                        Ilość podłączonych graczy: {this.state.connectedUsers}<br/>
-                        Pokój utworzony. Oczekiwanie na graczy...<br/>
-                        <Button variant={"danger"} onClick={() => {
-                            this.socket.emit(closeRoom, this.props.game.hostingRoom.roomCode);
-                            this.props.history.push('/');
-                        }}>Anuluj grę</Button>
-                        <Button variant={"primary"} onClick={() => {
-                            this.nextQuestion(0);
-                        }}>Uruchom grę i pokaż pytanie</Button>
-                    </div>
-                );
+                return(<WaitingForStart {...this.props}
+                                        socket={this.socket}
+                                        nextQuestion={(i) => this.nextQuestion(i)}/>);
             case 'QUESTION':
                 switch (this.state.questionTab) {
                     case 1: //correct answer
