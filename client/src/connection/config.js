@@ -1,4 +1,5 @@
 export const server = (process.env.NODE_ENV === 'development' ? 'http://localhost:4001' : 'http://localhost:4001');
+export const client = (process.env.NODE_ENV === 'development' ? 'http://192.168.1.71:3000' : 'http://192.168.1.71:3000');
 
 export const createNewRoom = 'CREATE_NEW_ROOW';
 export const roomCreated = 'ROOM_CREATED';

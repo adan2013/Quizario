@@ -9,8 +9,7 @@ class LogicSwitch extends Component {
         }
     }
 
-    changeValue = () => {
-        let newValue = !this.state.value;
+    changeValue = (newValue) => {
         this.setState({value: newValue});
         this.props.onChange(newValue);
     };
@@ -26,12 +25,12 @@ class LogicSwitch extends Component {
             <div>
                 <ButtonGroup>
                     <Button variant={!this.state.value ? "secondary" : "light"}
-                            onClick={this.changeValue}
+                            onClick={() => this.changeValue(false)}
                             style={this.switchButtonStyle}>
                         {this.props.offText ? this.props.offText : "OFF"}
                     </Button>
                     <Button variant={this.state.value ? "secondary" : "light"}
-                            onClick={this.changeValue}
+                            onClick={() => this.changeValue(true)}
                             style={this.switchButtonStyle}>
                         {this.props.onText ? this.props.onText : "ON"}
                     </Button>
