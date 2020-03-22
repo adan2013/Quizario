@@ -1,0 +1,10 @@
+.number-display {
+    display: inline-block;
+    width: 100px;
+    height: 40px;
+    background-color: var(--gray);
+}
+
+.number-display-value {
+    line-height: 40px;
+}

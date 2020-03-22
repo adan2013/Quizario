@@ -1,0 +1,10 @@
+.time-display {
+    display: inline-block;
+    width: 100px;
+    height: 40px;
+    background-color: var(--gray);
+}
+
+.time-display-value {
+    line-height: 40px;
+}

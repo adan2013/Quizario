@@ -19,15 +19,12 @@ import {
 } from "../../connection/config";
 import {Button, Form} from "react-bootstrap";
 import testQuestions from '../../testQuestions'
+import Creating from "./Creating";
 
 class Host extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            title: '',
-            timeLimit: '0',
-            questionLimit: '0',
-            randomOrder: false,
             connectedUsers: 0,
             answerCount: 0,
             questions: [],
@@ -85,27 +82,6 @@ class Host extends React.Component {
             array[randomIndex] = temporaryValue;
         }
         return array;
-    };
-
-    createRoom = () => {
-        if(this.state.questionLimit === '' || this.state.timeLimit === '' || isNaN(this.state.questionLimit) || isNaN(this.state.timeLimit) || this.state.title === ''){
-            alert('błędne wartości!');
-        }else{
-            const data = {
-                title: this.state.title,
-                timeLimit: this.state.timeLimit,
-                questionLimit: this.state.questionLimit,
-                randomOrder: this.state.randomOrder
-            };
-            let q = testQuestions;
-            if(this.state.randomOrder) this.shuffle(q);
-            this.setState({
-                questions: q
-            });
-            this.props.setHostingRoom(data);
-            this.props.switchState('WAITING_FOR_CODE');
-            this.socket.emit(createNewRoom, data);
-        }
     };
 
     nextQuestion = (index) => {
@@ -179,36 +155,8 @@ class Host extends React.Component {
     render() {
         switch(this.props.game.state) {
             case 'CREATING':
-                return(
-                    <div>
-                        <form>
-                            <div>Tytuł quizu:</div>
-                            <Form.Control type={"text"}
-                                          value={this.state.title}
-                                          onChange={(e) => this.setState({title: e.target.value})}
-                                          maxLength={"30"}/>
-                            <div>Limit czasu: (0-wyłączone)</div>
-                            <Form.Control type={"text"}
-                                          value={this.state.timeLimit}
-                                          onChange={(e) => this.setState({timeLimit: e.target.value})}
-                                          maxLength={"3"}/>
-                            <div>Limit ilości pytań: (0-wyłączone)</div>
-                            <Form.Control type={"text"}
-                                          value={this.state.questionLimit}
-                                          onChange={(e) => this.setState({questionLimit: e.target.value})}
-                                          maxLength={"3"}/>
-                            <div>Losowa kolejność:</div>
-                            <Form.Control type={"checkbox"}
-                                          checked={this.state.randomOrder}
-                                          onChange={(e) => this.setState({randomOrder: e.target.checked})}
-                                          maxLength={"3"}/>
-                            <Button type={"submit"} variant={"primary"} onClick={this.createRoom} disabled={this.state.title === ''}>
-                                Utwórz pokój
-                            </Button>
-                            <Button variant={"primary"} onClick={() => this.props.history.push('/')}>Powrót do menu</Button>
-                        </form>
-                    </div>
-                );
+                return(<Creating {...this.props}
+                                 socket={this.socket}/>);
             case 'WAITING_FOR_CODE':
                 return(
                     <div>
