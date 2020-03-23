@@ -126,7 +126,7 @@ class Question extends Component {
             <CenterBox logo cancel={"Zakończ quiz"} closeRoomSignal roomHeader {...this.props}>
                 <div className={"message-box"}>
                     {this.props.questionTab !== 3 && <Container fluid><this.QuestionGrid/></Container>}
-                    {this.props.questionTab === 3 && <RankTable data={this.props.generalRanking} byPoints/>}
+                    {this.props.questionTab === 3 && <RankTable data={this.props.generalRanking}/>}
                 </div>
                 <div className={"question-control-offset"}/>
                 <this.ControlButtons/>

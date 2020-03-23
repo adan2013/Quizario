@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Table} from 'react-bootstrap';
 import {Container, Row, Col, Button} from 'react-bootstrap';
 import LogicSwitch from "../LogicSwitch";
+import Downloader from 'react-file-download'
 import './RankTable.css';
 
 class RankTable extends Component {
@@ -24,23 +25,18 @@ class RankTable extends Component {
         return (nameA < nameB) ? -1 : (nameA > nameB) ? 1 : 0;
     };
 
-    TableContent = () => {
-        let data = this.props.data.slice();
-        data.sort(this.state.byPoints ? this.sortByPoints : this.sortAlphabetically);
-        let no = 1;
-        return data.map(item => {
-            return(
-                <tr key={item.nickname}>
-                    <td>{no++}</td>
-                    <td>{item.nickname}</td>
-                    <td>{item.points}</td>
-                </tr>
-            );
-        });
-    };
-
     render() {
         if(this.props.data) {
+            let csv = [["Lp.", "Nick gracza", "Ilość punktów"]];
+            let data = this.props.data.slice();
+            let no = 1;
+            data.sort(this.state.byPoints ? this.sortByPoints : this.sortAlphabetically);
+            data.forEach(item => {
+                csv.push([no++, item.nickname, item.points]);
+            });
+            const csvFile = csv.map(e => e.join(",")).join("\n");
+            no = 1;
+
             return (
                 <div className={"rank-table"}>
                     {
@@ -50,11 +46,13 @@ class RankTable extends Component {
                                 <Col xs={6}>
                                     <LogicSwitch value={this.state.byPoints}
                                                  offText={"Alfabetycznie"} onText={"Punkty malejąco"}
-                                                 onChange={(val) => this.setState({byPoints: val})}/>
+                                                 onChange={(val) => {this.setState({byPoints: val})}}/>
                                 </Col>
                                 <Col xs={6}>
-                                    <Button variant={"secondary"}>
-                                        Exportuj do pliku CSV
+                                    <Button variant={"secondary"} onClick={() => {
+                                        Downloader(csvFile, 'quiz.csv');
+                                    }}>
+                                        Export do pliku CSV
                                     </Button>
                                 </Col>
                             </Row>
@@ -64,12 +62,20 @@ class RankTable extends Component {
                         <thead>
                         <tr>
                             <th>Lp.</th>
-                            <th>Nick</th>
+                            <th>Nick gracza</th>
                             <th>Ilość punktów</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <this.TableContent/>
+                            {data.map(item => {
+                                return(
+                                    <tr>
+                                        <td>{no++}</td>
+                                        <td>{item.nickname}</td>
+                                        <td>{item.points}</td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </Table>
                 </div>
