@@ -1,12 +1,15 @@
 import React from 'react'
-import './page404.css'
+import CenterBox from "../../components/CenterBox";
 
 class Page404 extends React.Component {
     render() {
         return(
-            <div className={"background-404"}>
-                <div className={"text-404"}>404: Strona nie istnieje</div>
-            </div>
+            <CenterBox logo cancel={"Powrót"} {...this.props}>
+                <div className={"message-box"}>
+                    <div style={{fontSize: '4em'}}>404</div>
+                    Podana strona nie została znaleziona
+                </div>
+            </CenterBox>
         );
     }
 }
