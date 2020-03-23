@@ -19,7 +19,7 @@ class Final extends Component {
             let totalPoints = stats[place].points;
             place++; // 0 > 1, 1 > 2 etc.
             return (
-                <CenterBox logo cancel={"Powrót"} {...this.props}>
+                <CenterBox logo cancel={"Powrót"} roomHeader {...this.props}>
                     <AssignmentTurnedInIcon style={{fontSize: '72px'}}/>
                     <div className={"message-box"}>
                         Quiz zakończony!<br/><br/>

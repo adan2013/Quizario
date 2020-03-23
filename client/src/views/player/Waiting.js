@@ -13,7 +13,7 @@ class Waiting extends Component {
             if(this.props.correctAnswer != null) {
                 if(this.props.selectedAnswer === this.props.correctAnswer) {
                     return (
-                        <CenterBox logo cancel={"Wyjdź"} {...this.props}>
+                        <CenterBox logo cancel={"Wyjdź"} roomHeader {...this.props}>
                             <InsertEmoticonIcon style={{fontSize: '72px'}}/>
                             <div className={"message-box"}>
                                 Odpowiedź poprawna! Gratulacje!
@@ -22,7 +22,7 @@ class Waiting extends Component {
                     );
                 }else{
                     return (
-                        <CenterBox logo cancel={"Wyjdź"} {...this.props}>
+                        <CenterBox logo cancel={"Wyjdź"} roomHeader {...this.props}>
                             <SentimentVeryDissatisfiedIcon style={{fontSize: '72px'}}/>
                             <div className={"message-box"}>
                                 Odpowiedź błędna<br/><br/>
@@ -33,7 +33,7 @@ class Waiting extends Component {
                 }
             }else{
                 return (
-                    <CenterBox logo cancel={"Wyjdź"} {...this.props}>
+                    <CenterBox logo cancel={"Wyjdź"} roomHeader {...this.props}>
                         <QueryBuilderIcon style={{fontSize: '72px'}}/>
                         <div className={"message-box"}>
                             Wybrano odpowiedź {returnLetter(this.props.selectedAnswer)}<br/><br/>
@@ -44,10 +44,11 @@ class Waiting extends Component {
             }
         }else{
             return (
-                <CenterBox logo cancel={"Wyjdź"} {...this.props}>
+                <CenterBox logo cancel={"Wyjdź"} roomHeader {...this.props}>
                     <CheckCircleOutlineIcon style={{fontSize: '72px'}}/>
                     <div className={"message-box"}>
-                        Połączono z pokojem<br/><br/>
+                        Połączono z pokojem<br/>
+                        {this.props.game.hostingRoom.title}<br/><br/>
                         Obserwuj komunikaty na ekranie hosta...
                     </div>
                 </CenterBox>

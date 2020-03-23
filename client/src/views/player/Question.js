@@ -57,7 +57,7 @@ class Question extends Component {
 
     render() {
         return (
-            <CenterBox logo cancel={"Wyjdź"} {...this.props}>
+            <CenterBox logo cancel={"Wyjdź"} roomHeader {...this.props}>
                 <div className={"message-box"}>
                     Odpowiedz na pytanie:<br/>
                     <Container fluid>
