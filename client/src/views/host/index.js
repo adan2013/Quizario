@@ -24,7 +24,7 @@ class Host extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            connectedUsers: 0, //TODO connected users in waiting for start
+            connectedUsers: 0,
             answerCount: 0,
             questions: [],
             questionIndex: 0,
@@ -140,7 +140,8 @@ class Host extends React.Component {
             case 'WAITING_FOR_START':
                 return(<WaitingForStart {...this.props}
                                         socket={this.socket}
-                                        nextQuestion={(i) => this.nextQuestion(i)}/>);
+                                        nextQuestion={(i) => this.nextQuestion(i)}
+                                        connectedUsers={this.state.connectedUsers}/>);
             case 'QUESTION':
                 return(<Question {...this.props}
                                  socket={this.socket}

@@ -48,7 +48,7 @@ class Waiting extends Component {
                     <CheckCircleOutlineIcon style={{fontSize: '72px'}}/>
                     <div className={"message-box"}>
                         Połączono z pokojem<br/>
-                        {this.props.game.hostingRoom.title}<br/><br/>
+                        "{this.props.game.hostingRoom.title}"<br/><br/>
                         Obserwuj komunikaty na ekranie hosta...
                     </div>
                 </CenterBox>

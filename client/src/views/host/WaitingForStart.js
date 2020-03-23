@@ -19,7 +19,10 @@ class WaitingForStart extends Component {
                                 <div className={"code-block"}>{client}</div>
                                 i wprowadź poniższy kod dostępu:<br/>
                                 <div className={"code-block"}>{this.props.game.hostingRoom.roomCode}</div>
-                                <div className={"hide-qr"}>lub zeskanuj kod QR znajdujący się obok</div>
+                                <div className={"hide-qr"}>
+                                    lub zeskanuj kod QR znajdujący się obok
+                                </div>
+                                <br/>Liczba podłączonych graczy: {this.props.connectedUsers}<br/>
                                 <Button variant={"secondary"} onClick={() => {this.props.nextQuestion(0);}}
                                         className={"start-button"}>
                                     <PlayCircleOutlineIcon fontSize={"large"}/><br/>Uruchom quiz
