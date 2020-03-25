@@ -12,7 +12,9 @@ import AssessmentIcon from '@material-ui/icons/Assessment';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import PanToolIcon from '@material-ui/icons/PanTool';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+
 import RankTable from "../../components/RankTable";
+import Timer from '../../components/Timer';
 
 
 class Question extends Component {
@@ -20,8 +22,19 @@ class Question extends Component {
         super(props);
         this.state = {
             tab: 0
+        };
+        this.timer = React.createRef();
+    }
+
+    componentDidMount() {
+        if(this.props.game.hostingRoom.timeLimit > 0) {
+            this.timer.current.startTimer(this.props.game.hostingRoom.timeLimit);
         }
     }
+
+    timerTrigger = () => {
+        if(this.props.questionIsOpen) this.nextButton();
+    };
 
     correctGreenBox = (answer) => {
         return(this.props.questionTab === 1 && this.props.question.correct === answer ? ' question-answer-correct' : '');
@@ -45,7 +58,9 @@ class Question extends Component {
                         </div>
                     </Col>
                     <Col md={{span: 4, order: 2}} sm={{span: 12, order: 1}} xs={{span: 12, order: 1}}>
-                        <div className={"question-timer"}>0:00</div>
+                        {this.props.game.hostingRoom.timeLimit > 0 &&
+                        <Timer ref={this.timer} trigger={this.timerTrigger}/>
+                        }
                     </Col>
                     <Col md={{span: 4, order: 3}} sm={{span: 6, order: 3}} xs={{span: 6, order: 3}}>
                         <div className={"question-answers-counter"}>
@@ -111,7 +126,7 @@ class Question extends Component {
                     }}>
                         <ViewListIcon fontSize={"large"}/><br/>Ranking
                     </Button>
-                    <Button variant={"secondary"} disabled={this.props.isLastQuestion && !this.props.questionIsOpen} onClick={this.props.nextButton}>
+                    <Button variant={"secondary"} disabled={this.props.isLastQuestion && !this.props.questionIsOpen} onClick={this.nextButton}>
                         {this.props.questionIsOpen ? <PanToolIcon fontSize={"large"}/> : <ArrowForwardIcon/>}
                         <br/>
                         {this.props.questionIsOpen ? 'Stop' : 'Następne'}
@@ -121,11 +136,24 @@ class Question extends Component {
         );
     };
 
+    nextButton = () => {
+        if(this.props.game.hostingRoom.timeLimit > 0) {
+            if(this.props.questionIsOpen) {
+                this.timer.current.stopTimer();
+            }else{
+                this.timer.current.startTimer(this.props.game.hostingRoom.timeLimit);
+            }
+        }
+        this.props.nextButton();
+    };
+
     render() {
         return (
             <CenterBox logo cancel={"Zakończ quiz"} closeRoomSignal roomHeader {...this.props}>
                 <div className={"message-box"}>
-                    {this.props.questionTab !== 3 && <Container fluid><this.QuestionGrid/></Container>}
+                    <Container fluid style={this.props.questionTab === 3 ? {display: 'none'} : {}}>
+                        <this.QuestionGrid/>
+                    </Container>
                     {this.props.questionTab === 3 && <RankTable data={this.props.generalRanking}/>}
                 </div>
                 <div className={"question-control-offset"}/>
