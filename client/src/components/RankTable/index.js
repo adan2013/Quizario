@@ -69,7 +69,7 @@ class RankTable extends Component {
                         <tbody>
                             {data.map(item => {
                                 return(
-                                    <tr>
+                                    <tr key={no}>
                                         <td>{no++}</td>
                                         <td>{item.nickname}</td>
                                         <td>{item.points}</td>

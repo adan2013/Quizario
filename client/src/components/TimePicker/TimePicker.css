@@ -3,6 +3,7 @@
     width: 100px;
     height: 40px;
     background-color: var(--gray);
+    font-size: 60%;
 }
 
 .time-display-value {
