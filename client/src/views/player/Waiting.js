@@ -14,7 +14,7 @@ class Waiting extends Component {
                 if(this.props.selectedAnswer === this.props.correctAnswer) {
                     return (
                         <CenterBox logo cancel={"Wyjdź"} roomHeader {...this.props}>
-                            <InsertEmoticonIcon style={{fontSize: '72px'}}/>
+                            <InsertEmoticonIcon style={{fontSize: '4.5em'}}/>
                             <div className={"message-box"}>
                                 Odpowiedź poprawna! Gratulacje!
                             </div>
@@ -23,7 +23,7 @@ class Waiting extends Component {
                 }else{
                     return (
                         <CenterBox logo cancel={"Wyjdź"} roomHeader {...this.props}>
-                            <SentimentVeryDissatisfiedIcon style={{fontSize: '72px'}}/>
+                            <SentimentVeryDissatisfiedIcon style={{fontSize: '4.5em'}}/>
                             <div className={"message-box"}>
                                 Odpowiedź błędna<br/><br/>
                                 Poprawną odpowiedzią było: {returnLetter(this.props.correctAnswer)}
@@ -34,7 +34,7 @@ class Waiting extends Component {
             }else{
                 return (
                     <CenterBox logo cancel={"Wyjdź"} roomHeader {...this.props}>
-                        <QueryBuilderIcon style={{fontSize: '72px'}}/>
+                        <QueryBuilderIcon style={{fontSize: '4.5em'}}/>
                         <div className={"message-box"}>
                             Wybrano odpowiedź {returnLetter(this.props.selectedAnswer)}<br/><br/>
                             Oczekuj na zakończenie odpowiadania...
@@ -45,7 +45,7 @@ class Waiting extends Component {
         }else{
             return (
                 <CenterBox logo cancel={"Wyjdź"} roomHeader {...this.props}>
-                    <CheckCircleOutlineIcon style={{fontSize: '72px'}}/>
+                    <CheckCircleOutlineIcon style={{fontSize: '4.5em'}}/>
                     <div className={"message-box"}>
                         Połączono z pokojem<br/>
                         "{this.props.game.hostingRoom.title}"<br/><br/>

@@ -20,7 +20,7 @@ class Final extends Component {
             place++; // 0 > 1, 1 > 2 etc.
             return (
                 <CenterBox logo cancel={"Powrót"} roomHeader {...this.props}>
-                    <AssignmentTurnedInIcon style={{fontSize: '72px'}}/>
+                    <AssignmentTurnedInIcon style={{fontSize: '4.5em'}}/>
                     <div className={"message-box"}>
                         Quiz zakończony!<br/><br/>
                         Zdobyto punktów:<br/>

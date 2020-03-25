@@ -7,7 +7,7 @@ class NicknameIsBusy extends Component {
     render() {
         return (
             <CenterBox logo cancel={"Powrót"} {...this.props}>
-                <WarningIcon style={{fontSize: '72px'}}/>
+                <WarningIcon style={{fontSize: '4.5em'}}/>
                 <div className={"message-box"}>
                     Nick "{this.props.game.playerName}" jest już zajęty - wybierz inny!
                 </div>

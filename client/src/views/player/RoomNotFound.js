@@ -7,7 +7,7 @@ class RoomNotFound extends Component {
     render() {
         return (
             <CenterBox logo cancel={"Powrót"} {...this.props}>
-                <WarningIcon style={{fontSize: '72px'}}/>
+                <WarningIcon style={{fontSize: '4.5em'}}/>
                 <div className={"message-box"}>
                     Pokój o numerze {this.props.game.roomCode} nie został znaleziony!
                 </div>

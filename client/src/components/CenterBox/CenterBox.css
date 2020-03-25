@@ -8,7 +8,7 @@
     height: 100%;
     width: 100%;
     color: #fff;
-    font-size: 22px;
+    font-size: 16px;
     font-family: 'Comfortaa', 'Segoe UI', sans-serif;
     background: rgb(9,56,121) !important;
     background: linear-gradient(45deg, rgba(9,56,121,1) 13%, rgba(0,212,255,1) 100%) !important;
@@ -52,4 +52,24 @@
 
 .watermark-logo img {
     height: 25px;
+}
+
+/*Small devices (landscape phones, 576px and up)*/
+@media (min-width: 576px) {
+    .outer { font-size: 16px; }
+}
+
+/*Medium devices (tablets, 768px and up)*/
+@media (min-width: 768px) {
+    .outer { font-size: 22px; }
+}
+
+/*Large devices (desktops, 992px and up)*/
+@media (min-width: 992px) {
+    .outer { font-size: 26px; }
+}
+
+/*Extra large devices (large desktops, 1200px and up)*/
+@media (min-width: 1200px) {
+    .outer { font-size: 32px; }
 }
