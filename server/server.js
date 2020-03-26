@@ -136,15 +136,20 @@ io.on('connection', socket => {
     socket.on(addToRoom, (roomCode, playerName, reconnectMode) => {
         const theRoom = getRoomObject(roomCode);
         if(theRoom) {
+            const isBusy = theRoom.players.findIndex(item => {
+                return item.nickname === playerName;
+            });
             if(reconnectMode) {
-                socket.join(roomCode);
-                socket.emit(joinedToRoom, theRoom);
-                const userCount = theRoom.players.length;
-                console.log(socket.id + ' > user "' + playerName + '" used reconnect mode in room ' + roomCode + ' (players in room: ' + userCount + ')');
+                if(isBusy >= 0) {
+                    socket.join(roomCode);
+                    socket.emit(joinedToRoom, theRoom);
+                    const userCount = theRoom.players.length;
+                    console.log(socket.id + ' > user "' + playerName + '" used reconnect mode in room ' + roomCode + ' (players in room: ' + userCount + ')');
+                }else{
+                    socket.emit(roomNotFound);
+                    console.log(socket.id + ' > user not found! Reconnect mode error in room with code ' + roomCode);
+                }
             }else{
-                const isBusy = theRoom.players.findIndex(item => {
-                    return item.nickname === playerName;
-                });
                 if(isBusy >= 0) {
                     socket.emit(nicknameIsBusy);
                     console.log(socket.id + ' > in room ' + roomCode + ' nickname "' + playerName + '" is already busy! Player request rejected!');
