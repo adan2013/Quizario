@@ -13,3 +13,8 @@
 .main-footer-btn {
     margin: 50px auto 20px auto;
 }
+
+.reconnect-btn {
+    display: block;
+    margin: 10px auto 0 auto;
+}

@@ -3,12 +3,14 @@ import {connect} from 'react-redux'
 import {switchStateAC, setPlayerConfigAC} from '../../actions/game'
 import {Row, Col, Container, Button, ButtonGroup, Form} from 'react-bootstrap'
 import CenterBox from "../../components/CenterBox";
+import {reconnectModeIsAvailable} from '../../connection/reconnect'
 import './main.css'
 
 import logo from '../../assets/logo.svg'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import EditIcon from '@material-ui/icons/Edit';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
+import PowerIcon from '@material-ui/icons/Power';
 
 class Main extends React.Component {
     constructor(props) {
@@ -70,6 +72,15 @@ class Main extends React.Component {
                                         disabled={this.state.roomCode.length !== 6 || this.state.playerName === ''}>
                                     <PlayCircleOutlineIcon/> Dołącz do gry
                                 </Button>
+
+                                {reconnectModeIsAvailable() &&
+                                <Button type={"submit"}
+                                        variant={"warning"}
+                                        onClick={this.reconnect} className={"reconnect-btn"}>
+                                    <PowerIcon/> Powróć do ostatniej gry
+                                </Button>
+                                }
+
                             </form>
                         </Col>
                         <Col xs={12}>
