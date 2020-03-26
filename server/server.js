@@ -24,6 +24,7 @@ const closeQuestion = 'CLOSE_QUESTION';
 const answersClose = 'ANSWERS_CLOSE';
 const answerSelected = 'ANSWER_SELECTED';
 const answerCountUpdate = 'ANSWER_COUNT_UPDATE';
+const timerSync = 'TIMER_SYNC';
 
 const answerStatsRequest = 'ANSWER_STATS_REQUEST';
 const answerStatsResponse = 'ANSWER_STATS_RESPONSE';
@@ -180,6 +181,10 @@ io.on('connection', socket => {
     socket.on(answerSelected, (room, player, answer) => {
         console.log(socket.id + ' > player "' + player + '" send answer ' + returnLetter(answer) + ' in room ' + room);
         addPointsToPlayer(room, player, answer, socket.id);
+    });
+
+    socket.on(timerSync, (room, value) => {
+        socket.to(room).emit(timerSync, value);
     });
 
     socket.on(answerStatsRequest, (room) => {

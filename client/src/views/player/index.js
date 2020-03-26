@@ -8,6 +8,7 @@ import {
     joinedToRoom,
     answersOpen,
     answersClose,
+    timerSync,
     gameCompleted
 } from '../../connection/config'
 import {setHostingRoomAC, switchStateAC} from "../../actions/game";
@@ -25,7 +26,8 @@ class Player extends React.Component {
         this.state = {
             question: null,
             selectedAnswer: null,
-            correctAnswer: null
+            correctAnswer: null,
+            timerValue: 0
         }
     }
 
@@ -53,13 +55,22 @@ class Player extends React.Component {
             });
 
             this.socket.on(answersOpen, question => {
-                this.setState({question: question, selectedAnswer: null, correctAnswer: null});
+                this.setState({
+                    question: question,
+                    selectedAnswer: null,
+                    correctAnswer: null,
+                    timerValue: this.props.game.hostingRoom.timeLimit
+                });
                 this.props.switchState('QUESTION');
             });
 
             this.socket.on(answersClose, question => {
                 this.setState({question: question, correctAnswer: question.correct});
                 this.props.switchState('WAITING');
+            });
+
+            this.socket.on(timerSync, value => {
+                this.setState({timerValue: value});
             });
 
             this.socket.on(gameCompleted, stats => {
@@ -96,7 +107,8 @@ class Player extends React.Component {
                 return(<Question {...this.props}
                                  socket={this.socket}
                                  question={this.state.question}
-                                 selected={this.selected}/>);
+                                 selected={this.selected}
+                                 timer={this.state.timerValue}/>);
             case 'FINAL':
                 return(<Final {...this.props}
                               stats={this.state.stats}/>);

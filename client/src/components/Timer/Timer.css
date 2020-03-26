@@ -2,6 +2,11 @@
     display: inline-block;
 }
 
+.timer-container-remote {
+    display: block;
+    margin-bottom: 8px;
+}
+
 .timer-normal {
     color: #fff;
 }

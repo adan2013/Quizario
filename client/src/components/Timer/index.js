@@ -26,6 +26,7 @@ class Timer extends Component {
         if(this.state.running) {
             const sec = Math.round((new Date().getTime() - this.state.startTime) / 1000);
             this.setState({current: sec});
+            if(this.props.tick) this.props.tick(this.state.limit - sec);
             if(sec >= this.state.limit) {
                 this.stopTimer();
                 if(this.props.trigger) this.props.trigger();

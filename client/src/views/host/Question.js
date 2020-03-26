@@ -4,7 +4,8 @@ import {Button, Container, Col, Row, ButtonGroup, ProgressBar} from "react-boots
 import './Question.css'
 import {
     answerStatsRequest,
-    generalRankingRequest
+    generalRankingRequest,
+    timerSync
 } from "../../connection/config";
 
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
@@ -48,6 +49,10 @@ class Question extends Component {
         return(this.props.questionTab === 2 && <ProgressBar now={value} label={value + '%'} className={"question-progress"}/>);
     };
 
+    timerTick = (value) => {
+        this.props.socket.emit(timerSync, this.props.game.hostingRoom.roomCode, value);
+    };
+
     QuestionGrid = () => {
         return(
             <div>
@@ -59,7 +64,7 @@ class Question extends Component {
                     </Col>
                     <Col md={{span: 4, order: 2}} sm={{span: 12, order: 1}} xs={{span: 12, order: 1}}>
                         {this.props.game.hostingRoom.timeLimit > 0 &&
-                        <Timer ref={this.timer} trigger={this.timerTrigger}/>
+                        <Timer ref={this.timer} trigger={this.timerTrigger} tick={this.timerTick}/>
                         }
                     </Col>
                     <Col md={{span: 4, order: 3}} sm={{span: 6, order: 3}} xs={{span: 6, order: 3}}>

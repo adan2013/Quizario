@@ -19,6 +19,7 @@ export const closeQuestion = 'CLOSE_QUESTION';
 export const answersClose = 'ANSWERS_CLOSE';
 export const answerSelected = 'ANSWER_SELECTED';
 export const answerCountUpdate = 'ANSWER_COUNT_UPDATE';
+export const timerSync = 'TIMER_SYNC';
 
 export const answerStatsRequest = 'ANSWER_STATS_REQUEST';
 export const answerStatsResponse = 'ANSWER_STATS_RESPONSE';

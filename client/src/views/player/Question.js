@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import CenterBox from "../../components/CenterBox";
 import {Container, Col, Row, Button} from 'react-bootstrap'
 import {answerSelected} from "../../connection/config";
+import RemoteTimer from "../../components/Timer/RemoteTimer";
 import './Question.css'
 
 import answerA from '../../assets/answerA.svg';
@@ -59,6 +60,7 @@ class Question extends Component {
         return (
             <CenterBox logo cancel={"Wyjdź"} roomHeader {...this.props}>
                 <div className={"message-box"}>
+                    {this.props.game.hostingRoom.timeLimit > 0 && <RemoteTimer seconds={this.props.timer}/>}
                     Odpowiedz na pytanie:<br/>
                     <Container fluid>
                         <this.Keyboard/>
