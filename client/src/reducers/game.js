@@ -4,6 +4,7 @@ const defaultStore = {
     state: '',
     roomCode: null,
     playerName: null,
+    reconnectMode: false,
     hostingRoom: null
 };
 
@@ -18,7 +19,8 @@ export default (state = defaultStore, action) => {
             return {
                 ...state,
                 roomCode: action.roomCode,
-                playerName: action.playerName
+                playerName: action.playerName,
+                reconnectMode: action.reconnectMode
             };
         case setHostingRoom:
             return {

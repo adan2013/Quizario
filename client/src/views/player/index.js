@@ -19,6 +19,7 @@ import RoomNotFound from "./RoomNotFound";
 import Waiting from "./Waiting";
 import Question from "./Question";
 import Final from "./Final";
+import {disableReconnectMode, enableReconnectMode} from "../../connection/reconnect";
 
 class Player extends React.Component {
     constructor(props) {
@@ -38,20 +39,23 @@ class Player extends React.Component {
             this.socket = socketIOClient(server);
 
             this.socket.on('connect', () => {
-                this.socket.emit(addToRoom, this.props.game.roomCode, this.props.game.playerName);
+                this.socket.emit(addToRoom, this.props.game.roomCode, this.props.game.playerName, this.props.game.reconnectMode);
             });
 
             this.socket.on(nicknameIsBusy, () => {
                 this.props.switchState('NICKNAME_IS_BUSY');
+                disableReconnectMode();
             });
 
             this.socket.on(roomNotFound, () => {
                 this.props.switchState('ROOM_NOT_FOUND');
+                disableReconnectMode();
             });
 
             this.socket.on(joinedToRoom, (roomObject) => {
                 this.props.setHostingRoom(roomObject);
                 this.props.switchState('WAITING');
+                enableReconnectMode(this.props.game.roomCode, this.props.game.playerName);
             });
 
             this.socket.on(answersOpen, question => {
@@ -76,6 +80,7 @@ class Player extends React.Component {
             this.socket.on(gameCompleted, stats => {
                 this.setState({stats: stats});
                 this.props.switchState('FINAL');
+                disableReconnectMode();
             });
 
         }else{

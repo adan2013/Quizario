@@ -9,11 +9,12 @@ export const switchStateAC = (state) => {
   }
 };
 
-export const setPlayerConfigAC = (roomCode, playerName) => {
+export const setPlayerConfigAC = (roomCode, playerName, reconnectMode) => {
     return {
         type: setPlayerConfig,
         roomCode,
-        playerName
+        playerName,
+        reconnectMode
     }
 };
 

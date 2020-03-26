@@ -2,15 +2,15 @@ const roomItem = 'reconnect-room';
 const playerItem = 'reconnect-player';
 
 export const reconnectModeIsAvailable = () => {
-    return window.localStorage.get(roomItem) !== null && window.localStorage.get(playerItem) !== null;
+    return window.localStorage.getItem(roomItem) !== null && window.localStorage.getItem(playerItem) !== null;
 };
 
 export const getReconnectRoom = () => {
-    return localStorage.get(roomItem);
+    return localStorage.getItem(roomItem);
 };
 
 export const getReconnectPlayer = () => {
-    return localStorage.get(playerItem);
+    return localStorage.getItem(playerItem);
 };
 
 export const enableReconnectMode = (room, player) => {

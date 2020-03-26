@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {switchStateAC, setPlayerConfigAC} from '../../actions/game'
 import {Row, Col, Container, Button, ButtonGroup, Form} from 'react-bootstrap'
 import CenterBox from "../../components/CenterBox";
-import {reconnectModeIsAvailable} from '../../connection/reconnect'
+import {reconnectModeIsAvailable, getReconnectRoom, getReconnectPlayer} from '../../connection/reconnect'
 import './main.css'
 
 import logo from '../../assets/logo.svg'
@@ -23,7 +23,7 @@ class Main extends React.Component {
 
     componentDidMount() {
         this.props.switchState('');
-        this.props.setPlayerConfig('', '');
+        this.props.setPlayerConfig('', '', false);
         const search = this.props.location.search;
         const params = new URLSearchParams(search);
         const code = params.get('code');
@@ -42,9 +42,14 @@ class Main extends React.Component {
 
     startGame = () => {
         if(this.state.roomCode !== '') {
-            this.props.setPlayerConfig(this.state.roomCode, this.state.playerName);
+            this.props.setPlayerConfig(this.state.roomCode, this.state.playerName, false);
             this.props.history.push('/player');
         }
+    };
+
+    reconnect = () => {
+        this.props.setPlayerConfig(getReconnectRoom(), getReconnectPlayer(), true);
+        this.props.history.push('/player');
     };
 
     render() {

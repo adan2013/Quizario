@@ -133,26 +133,33 @@ io.on('connection', socket => {
     });
 
     //ADDING NEW USER TO THE ROOM
-    socket.on(addToRoom, (roomCode, playerName) => {
+    socket.on(addToRoom, (roomCode, playerName, reconnectMode) => {
         const theRoom = getRoomObject(roomCode);
         if(theRoom) {
-            const isBusy = theRoom.players.findIndex(item => {
-                return item.nickname === playerName;
-            });
-            if(isBusy >= 0) {
-                socket.emit(nicknameIsBusy);
-                console.log(socket.id + ' > in room ' + roomCode + ' nickname "' + playerName + '" is already busy! Player request rejected!');
-            }else{
-                theRoom.players.push({
-                   nickname: playerName,
-                   points: 0
-                });
+            if(reconnectMode) {
                 socket.join(roomCode);
                 socket.emit(joinedToRoom, theRoom);
                 const userCount = theRoom.players.length;
-                let host = getHostSocket(roomCode);
-                if(host) host.emit(userCountUpdate, userCount);
-                console.log(socket.id + ' > user joined to room ' + roomCode + ' with nickname "' + socket.nickname + '" (players in room: ' + userCount + ')');
+                console.log(socket.id + ' > user "' + playerName + '" used reconnect mode in room ' + roomCode + ' (players in room: ' + userCount + ')');
+            }else{
+                const isBusy = theRoom.players.findIndex(item => {
+                    return item.nickname === playerName;
+                });
+                if(isBusy >= 0) {
+                    socket.emit(nicknameIsBusy);
+                    console.log(socket.id + ' > in room ' + roomCode + ' nickname "' + playerName + '" is already busy! Player request rejected!');
+                }else{
+                    theRoom.players.push({
+                        nickname: playerName,
+                        points: 0
+                    });
+                    socket.join(roomCode);
+                    socket.emit(joinedToRoom, theRoom);
+                    const userCount = theRoom.players.length;
+                    let host = getHostSocket(roomCode);
+                    if(host) host.emit(userCountUpdate, userCount);
+                    console.log(socket.id + ' > user joined to room ' + roomCode + ' with nickname "' + playerName + '" (players in room: ' + userCount + ')');
+                }
             }
         }else{
             socket.emit(roomNotFound);
