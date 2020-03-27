@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Container, Row, Col} from 'react-bootstrap';
+import {Container, Row} from 'react-bootstrap';
 import './QuestionExplorer.css';
 
 class QuestionExplorer extends Component {

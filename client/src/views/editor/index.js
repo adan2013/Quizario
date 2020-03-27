@@ -90,6 +90,14 @@ class Editor extends React.Component {
         }
     ];
 
+    updateQuestion = (data) => {
+        if(this.state.selectedIndex >= 0) {
+            let newData = this.state.workspace.slice();
+            newData[this.state.selectedIndex] = data;
+            this.setState({workspace: newData});
+        }
+    };
+
     render() {
         return(
             <CenterBox {...this.props}>
@@ -107,7 +115,7 @@ class Editor extends React.Component {
                                         {
                                             this.topButtonsConfig.map(btn => {
                                                 return(
-                                                    <Col lg={4} md={6}>
+                                                    <Col lg={4} md={6} key={btn.text}>
                                                         <Button variant={"secondary"}
                                                                 className={"editor-button"}
                                                                 onClick={btn.click}>
@@ -120,7 +128,8 @@ class Editor extends React.Component {
                                         }
                                     </Row>
                                     <Row>
-                                        <QuestionEditor question={this.state.selectedIndex < 0 ? null : this.state.workspace[this.state.selectedIndex]}/>
+                                        <QuestionEditor question={this.state.selectedIndex < 0 ? null : this.state.workspace[this.state.selectedIndex]}
+                                                        update={this.updateQuestion}/>
                                     </Row>
                                 </Container>
                             </div>
