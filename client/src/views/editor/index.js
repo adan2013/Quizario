@@ -130,6 +130,7 @@ class Editor extends React.Component {
             click: this.exitButton
         },
         {
+            customUpload: true,
             text: 'Wgraj',
             icon: <PublishIcon/>,
             click: this.uploadFile
@@ -198,17 +199,29 @@ class Editor extends React.Component {
                                     <Row noGutters>
                                         {
                                             this.topButtonsConfig().map(btn => {
-                                                return(
-                                                    <Col lg={4} md={6} key={btn.text}>
-                                                        <Button variant={btn.variant ? btn.variant : 'secondary'}
-                                                                className={"editor-button"}
-                                                                onClick={btn.click}
-                                                                disabled={btn.disabled}>
-                                                            {btn.icon}
-                                                            {(btn.icon ? ' ' : '') + btn.text}
-                                                        </Button>
-                                                    </Col>
-                                                );
+                                                if(btn.customUpload) {
+                                                    return(
+                                                        <Col lg={4} md={6} key={btn.text}>
+                                                            <span className={"btn btn-secondary btn-file editor-button"}>
+                                                                {btn.icon}
+                                                                {(btn.icon ? ' ' : '') + btn.text}
+                                                                <input type={"file"} accept={"application/json"}/>
+                                                            </span>
+                                                        </Col>
+                                                    );
+                                                }else{
+                                                    return(
+                                                        <Col lg={4} md={6} key={btn.text}>
+                                                            <Button variant={btn.variant ? btn.variant : 'secondary'}
+                                                                    className={"editor-button"}
+                                                                    onClick={btn.click}
+                                                                    disabled={btn.disabled}>
+                                                                {btn.icon}
+                                                                {(btn.icon ? ' ' : '') + btn.text}
+                                                            </Button>
+                                                        </Col>
+                                                    );
+                                                }
                                             })
                                         }
                                     </Row>
