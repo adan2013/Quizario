@@ -1,16 +1,15 @@
 import React from 'react'
 import CenterBox from "../../components/CenterBox";
-import {Container, Row, Col, Button} from 'react-bootstrap'
+import {Container, Row, Col, Button, Modal} from 'react-bootstrap'
 import './Editor.css';
 import QuestionExplorer from "../../components/QuestionExplorer";
 import QuestionEditor from "../../components/QuestionEditor";
-
+import Downloader from 'react-file-download'
 import testQuestion from '../../testQuestions';
 
 import CloseIcon from '@material-ui/icons/Close';
 import PublishIcon from '@material-ui/icons/Publish';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import HelpIcon from '@material-ui/icons/Help';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
@@ -20,15 +19,18 @@ class Editor extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            originalName: '',
             workspace: [],
             selectedIndex: -1,
+            changed: false,
+            exitModal: false,
+            deleteModal: false
         }
     }
 
     componentDidMount() {
         this.setState({
-            workspace: testQuestion,
-            selectedIndex: 0
+            workspace: testQuestion
         })
     }
 
@@ -39,10 +41,89 @@ class Editor extends React.Component {
     };
 
     exitButton = () => {
-
+        if(this.state.changed) {
+            this.setState({exitModal: true})
+        }else{
+            this.props.history.push('/');
+        }
     };
 
-    topButtonsConfig = [
+    uploadFile = () => {
+        //TODO upload
+    };
+
+    downloadFile = () => {
+        let name = this.state.originalName;
+        if(name === '') {
+            name = prompt('Podaj nazwę projektu lub pozostaw pole puste:');
+            if(name === '') {
+                name = 'question.json';
+            }else{
+                name += '.json';
+                this.setState({originalName: name});
+            }
+        }
+        Downloader(JSON.stringify(this.state.workspace, null, 2), name, 'application/json');
+    };
+
+    moveQuestion = (diff) => {
+        const oldIndex = this.state.selectedIndex;
+        const newIndex = oldIndex + diff;
+        let newData = this.state.workspace.slice();
+        newData.splice(newIndex, 0, newData.splice(oldIndex, 1)[0]);
+        this.setState({
+            workspace: newData,
+            selectedIndex: newIndex,
+            changed: true
+        });
+    };
+
+    deleteQuestion = (confirmed) => {
+        if(this.state.selectedIndex >= 0) {
+            if(confirmed) {
+                let newData = this.state.workspace.slice();
+                newData.splice(this.state.selectedIndex, 1);
+                let newIndex = this.state.selectedIndex;
+                if(newIndex >= newData.length) newIndex = newData.length - 1;
+                this.setState({
+                    deleteModal: false,
+                    workspace: newData,
+                    selectedIndex: newIndex,
+                    changed: true
+                });
+            }else{
+                this.setState({deleteModal: true});
+            }
+        }
+    };
+
+    addQuestion = (onCurrentIndex) => {
+        if(onCurrentIndex) {
+            let newData = this.state.workspace.slice();
+            newData.splice(this.state.selectedIndex + 1, 0, {
+                question: '',
+                correct: 0,
+                answers: ['', '', '', '']
+            });
+            this.setState({
+                workspace: newData,
+                selectedIndex: this.state.selectedIndex + 1,
+                changed: true
+            });
+        }else{
+            this.setState({
+                workspace: [...this.state.workspace, {
+                    question: '',
+                    correct: 0,
+                    answers: ['', '', '', '']
+                }],
+                selectedIndex: this.state.workspace.length,
+                changed: true
+            });
+        }
+    };
+
+    topButtonsConfig = () => [
         {
             text: 'Wyjdź',
             icon: <CloseIcon/>,
@@ -51,42 +132,42 @@ class Editor extends React.Component {
         {
             text: 'Wgraj',
             icon: <PublishIcon/>,
-            click: this.exitButton
+            click: this.uploadFile
         },
         {
+            variant: 'success',
             text: 'Pobierz',
             icon: <GetAppIcon/>,
-            click: this.exitButton
-        },
-        {
-            text: 'Pomoc',
-            icon: <HelpIcon/>,
-            click: this.exitButton
-        },
-        {
-            text: 'Przesuń w dół',
-            icon: <ArrowDownwardIcon/>,
-            click: this.exitButton
+            click: this.downloadFile,
+            disabled: this.state.workspace.length === 0
         },
         {
             text: 'Przesuń w górę',
             icon: <ArrowUpwardIcon/>,
-            click: this.exitButton
+            click: () => this.moveQuestion(-1),
+            disabled: this.state.selectedIndex < 1
         },
         {
-            text: 'Dodaj tutaj',
-            icon: <AddBoxIcon/>,
-            click: this.exitButton
-        },
-        {
-            text: 'Dodaj na końcu',
-            icon: <AddBoxIcon/>,
-            click: this.exitButton
+            text: 'Przesuń w dół',
+            icon: <ArrowDownwardIcon/>,
+            click: () => this.moveQuestion(1),
+            disabled: this.state.selectedIndex < 0 || this.state.selectedIndex + 1 === this.state.workspace.length
         },
         {
             text: 'Usuń',
             icon: <DeleteForeverIcon/>,
-            click: this.exitButton
+            click: () =>this.deleteQuestion(false),
+            disabled: this.state.selectedIndex < 0
+        },
+        {
+            text: 'Dodaj tutaj',
+            icon: <AddBoxIcon/>,
+            click: () => this.addQuestion(true)
+        },
+        {
+            text: 'Dodaj na końcu',
+            icon: <AddBoxIcon/>,
+            click: () => this.addQuestion(false)
         }
     ];
 
@@ -94,7 +175,10 @@ class Editor extends React.Component {
         if(this.state.selectedIndex >= 0) {
             let newData = this.state.workspace.slice();
             newData[this.state.selectedIndex] = data;
-            this.setState({workspace: newData});
+            this.setState({
+                workspace: newData,
+                changed: true
+            });
         }
     };
 
@@ -113,12 +197,13 @@ class Editor extends React.Component {
                                 <Container fluid>
                                     <Row noGutters>
                                         {
-                                            this.topButtonsConfig.map(btn => {
+                                            this.topButtonsConfig().map(btn => {
                                                 return(
                                                     <Col lg={4} md={6} key={btn.text}>
-                                                        <Button variant={"secondary"}
+                                                        <Button variant={btn.variant ? btn.variant : 'secondary'}
                                                                 className={"editor-button"}
-                                                                onClick={btn.click}>
+                                                                onClick={btn.click}
+                                                                disabled={btn.disabled}>
                                                             {btn.icon}
                                                             {(btn.icon ? ' ' : '') + btn.text}
                                                         </Button>
@@ -136,6 +221,32 @@ class Editor extends React.Component {
                         </Col>
                     </Row>
                 </Container>
+
+                <Modal show={this.state.exitModal} onHide={() => this.setState({exitModal: false})}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Ostrzeżenie</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>Wykryto w projekcie niepobierane zmiany!<br/>Czy na pewno chcesz wyjść z edytora?</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={() => this.props.history.push('/')}>Tak, wyjdź</Button>
+                        <Button variant="secondary" onClick={() => this.setState({exitModal: false})}>Nie, anuluj</Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={this.state.deleteModal} onHide={() => this.setState({deleteModal: false})}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Ostrzeżenie</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>Na pewno chcesz usunąć to pytanie?</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={() => this.deleteQuestion(true)}>Tak, usuń</Button>
+                        <Button variant="secondary" onClick={() => this.setState({deleteModal: false})}>Nie, anuluj</Button>
+                    </Modal.Footer>
+                </Modal>
             </CenterBox>
         );
     }
