@@ -21,3 +21,23 @@ export const calculateTime = (seconds, hideMinutes) => {
 export const addLeadingZero = (number) => {
     if(number < 10) return "0" + number; else return number;
 };
+
+export const validateJson = (json) => {
+    let result = true;
+    if(Array.isArray(json)) {
+        json.forEach(question => {
+            if(typeof question === 'object' && question !== null) {
+                if(question.hasOwnProperty('question') && question.hasOwnProperty('correct') && question.hasOwnProperty('answers')) {
+                    if(!(Array.isArray(question.answers) && question.answers.length === 4)) result = false;
+                }else{
+                    result = false;
+                }
+            }else{
+                result = false;
+            }
+        });
+    }else{
+        result = false;
+    }
+    return result;
+};

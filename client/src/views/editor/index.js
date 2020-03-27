@@ -5,7 +5,7 @@ import './Editor.css';
 import QuestionExplorer from "../../components/QuestionExplorer";
 import QuestionEditor from "../../components/QuestionEditor";
 import Downloader from 'react-file-download'
-import testQuestion from '../../testQuestions';
+import {validateJson} from "../../utilities";
 
 import CloseIcon from '@material-ui/icons/Close';
 import PublishIcon from '@material-ui/icons/Publish';
@@ -25,13 +25,8 @@ class Editor extends React.Component {
             changed: false,
             exitModal: false,
             deleteModal: false
-        }
-    }
-
-    componentDidMount() {
-        this.setState({
-            workspace: testQuestion
-        })
+        };
+        this.inputFile = React.createRef();
     }
 
     changeSelecion = (index) => {
@@ -49,7 +44,38 @@ class Editor extends React.Component {
     };
 
     uploadFile = () => {
-        //TODO upload
+        let fr = new FileReader();
+        fr.onload = (e) => {
+            let config = null;
+            try {
+                config = JSON.parse(e.target.result);
+                if(validateJson(config)) {
+                    this.setState({
+                        workspace: config
+                    });
+                }else{
+                    this.setState({
+                        workspace: [],
+                        originalName: ''
+                    });
+                    alert('Wykryto błędną strukturę pliku!');
+                }
+            }catch(error) {
+                this.setState({
+                    workspace: [],
+                    originalName: ''
+                });
+                alert('Wykryto błędną składnię pliku JSON!');
+            }
+            this.inputFile.current.value = "";
+        };
+        if(this.inputFile.current.files.item(0)) {
+            this.setState({
+                originalName: this.inputFile.current.files.item(0).name,
+                changed: false
+            });
+            fr.readAsText(this.inputFile.current.files.item(0));
+        }
     };
 
     downloadFile = () => {
@@ -205,7 +231,7 @@ class Editor extends React.Component {
                                                             <span className={"btn btn-secondary btn-file editor-button"}>
                                                                 {btn.icon}
                                                                 {(btn.icon ? ' ' : '') + btn.text}
-                                                                <input type={"file"} accept={"application/json"}/>
+                                                                <input type={"file"} accept={"application/json"} onChange={this.uploadFile} ref={this.inputFile}/>
                                                             </span>
                                                         </Col>
                                                     );
