@@ -24,7 +24,8 @@ class Editor extends React.Component {
             selectedIndex: -1,
             changed: false,
             exitModal: false,
-            deleteModal: false
+            deleteModal: false,
+            uploadModal: false
         };
         this.inputFile = React.createRef();
     }
@@ -44,6 +45,20 @@ class Editor extends React.Component {
     };
 
     uploadFile = () => {
+        if(this.state.changed) {
+            this.setState({uploadModal: true});
+        }else{
+            this.loadProject();
+        }
+    };
+
+    cancelUpload = () => {
+        this.setState({uploadModal: false});
+        this.inputFile.current.value = "";
+    };
+
+    loadProject = () => {
+        this.setState({uploadModal: false});
         let fr = new FileReader();
         fr.onload = (e) => {
             let config = null;
@@ -90,6 +105,7 @@ class Editor extends React.Component {
             }
         }
         Downloader(JSON.stringify(this.state.workspace, null, 2), name, 'application/json');
+        this.setState({changed: false});
     };
 
     moveQuestion = (diff) => {
@@ -284,6 +300,19 @@ class Editor extends React.Component {
                     <Modal.Footer>
                         <Button variant="danger" onClick={() => this.deleteQuestion(true)}>Tak, usuń</Button>
                         <Button variant="secondary" onClick={() => this.setState({deleteModal: false})}>Nie, anuluj</Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={this.state.uploadModal} onHide={this.cancelUpload}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Ostrzeżenie</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>Na pewno chcesz wczytać nowy projekt? W obecnym masz niezapisane zmiany!</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={this.loadProject}>Tak, wczytaj</Button>
+                        <Button variant="secondary" onClick={this.cancelUpload}>Nie, anuluj</Button>
                     </Modal.Footer>
                 </Modal>
             </CenterBox>
