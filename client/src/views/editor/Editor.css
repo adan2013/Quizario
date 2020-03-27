@@ -1,0 +1,17 @@
+.editor-container {
+    height: 100vh;
+}
+
+.question-editor {
+    background-color: #fff;
+    color: #000;
+    height: 100%;
+    max-height: 100vh;
+    align-items: stretch;
+    overflow-y: auto;
+}
+
+.editor-button {
+    width: 90%;
+    margin: 15px auto 0 auto;
+}
