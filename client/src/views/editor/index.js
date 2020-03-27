@@ -182,7 +182,7 @@ class Editor extends React.Component {
             text: 'Pobierz',
             icon: <GetAppIcon/>,
             click: this.downloadFile,
-            disabled: this.state.workspace.length === 0
+            disabled: this.state.workspace.length === 0 || !this.state.changed
         },
         {
             text: 'Przesuń w górę',
@@ -282,7 +282,7 @@ class Editor extends React.Component {
                         <Modal.Title>Ostrzeżenie</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <p>Wykryto w projekcie niepobierane zmiany!<br/>Czy na pewno chcesz wyjść z edytora?</p>
+                        <p>Wykryto w projekcie niepobrane zmiany!<br/>Czy na pewno chcesz wyjść z edytora?</p>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="danger" onClick={() => this.props.history.push('/')}>Tak, wyjdź</Button>
