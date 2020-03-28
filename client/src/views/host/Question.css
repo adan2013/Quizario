@@ -23,7 +23,7 @@
     background-color: #fff;
     color: #000;
     border-radius: 2px;
-    padding: 10px 50px;
+    padding: 10px 60px;
     margin: 10px;
 }
 
@@ -43,7 +43,7 @@
 
 .question-progress {
     margin-top: 5px;
-    margin-right: -40px;
+    margin-right: -50px;
 }
 
 .question-control-buttons {

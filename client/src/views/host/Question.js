@@ -41,7 +41,7 @@ class Question extends Component {
         return(this.props.questionTab === 1 && this.props.question.correct === answer ? ' question-answer-correct' : '');
     };
 
-    StatPrograssBar = ({answer}) => {
+    StatProgressBar = ({answer}) => {
         let value = 0;
         if(this.props.answerCount !== 0 && this.props.answerStats) {
             value = Math.round(this.props.answerStats[answer] * 100 / this.props.answerCount);
@@ -81,28 +81,28 @@ class Question extends Component {
                         <div className={"question-answer" + this.correctGreenBox(0)}>
                             <div className={"question-answer-letter"}>A</div>
                             {this.props.question.answers[0]}
-                            <this.StatPrograssBar answer={0}/>
+                            <this.StatProgressBar answer={0}/>
                         </div>
                     </Col>
                     <Col md={6} sm={12}>
                         <div className={"question-answer" + this.correctGreenBox(1)}>
                             <div className={"question-answer-letter"}>B</div>
                             {this.props.question.answers[1]}
-                            <this.StatPrograssBar answer={1}/>
+                            <this.StatProgressBar answer={1}/>
                         </div>
                     </Col>
                     <Col md={6} sm={12}>
                         <div className={"question-answer" + this.correctGreenBox(2)}>
                             <div className={"question-answer-letter"}>C</div>
                             {this.props.question.answers[2]}
-                            <this.StatPrograssBar answer={2}/>
+                            <this.StatProgressBar answer={2}/>
                         </div>
                     </Col>
                     <Col md={6} sm={12}>
                         <div className={"question-answer" + this.correctGreenBox(3)}>
                             <div className={"question-answer-letter"}>D</div>
                             {this.props.question.answers[3]}
-                            <this.StatPrograssBar answer={3}/>
+                            <this.StatProgressBar answer={3}/>
                         </div>
                     </Col>
                 </Row>
