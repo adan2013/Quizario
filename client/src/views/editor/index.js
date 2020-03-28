@@ -234,6 +234,9 @@ class Editor extends React.Component {
     render() {
         return(
             <CenterBox {...this.props}>
+                <div className={"message-box d-block d-sm-block d-md-none"}>
+                    Rozdzielczość przeglądarki urządzenia jest zbyt mała, aby uruchomić edytor pytań!
+                </div>
                 <Container fluid className={"editor-container d-none d-sm-none d-md-block"}>
                     <Row style={{height: '100%'}}>
                         <Col xl={4} lg={4} md={4} sm={12}>
