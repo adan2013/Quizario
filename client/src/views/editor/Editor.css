@@ -32,7 +32,12 @@
     display: block;
 }
 
+.editor-button-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .editor-button {
-    width: 95%;
+    width: 92%;
     margin: 15px auto 0 auto;
 }

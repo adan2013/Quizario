@@ -184,7 +184,7 @@ class Editor extends React.Component {
             click: this.uploadFile
         },
         {
-            variant: 'success',
+            variant: this.state.workspace.length === 0 || !this.state.changed ? null : 'success',
             text: 'Pobierz',
             icon: <GetAppIcon/>,
             click: this.downloadFile,
@@ -249,7 +249,7 @@ class Editor extends React.Component {
                                             this.topButtonsConfig().map(btn => {
                                                 if(btn.customUpload) {
                                                     return(
-                                                        <Col lg={4} md={6} key={btn.text}>
+                                                        <Col lg={4} md={6} key={btn.text} className={"editor-button-container"}>
                                                             <span className={"btn btn-secondary btn-file editor-button"}>
                                                                 {btn.icon}
                                                                 {(btn.icon ? ' ' : '') + btn.text}
@@ -259,7 +259,7 @@ class Editor extends React.Component {
                                                     );
                                                 }else{
                                                     return(
-                                                        <Col lg={4} md={6} key={btn.text}>
+                                                        <Col lg={4} md={6} key={btn.text} className={"editor-button-container"}>
                                                             <Button variant={btn.variant ? btn.variant : 'secondary'}
                                                                     className={"editor-button"}
                                                                     onClick={btn.click}
