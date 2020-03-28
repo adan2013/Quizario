@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Container, Row} from 'react-bootstrap';
+import {t} from 'react-switch-lang';
 import './QuestionExplorer.css';
 
 class QuestionExplorer extends Component {
@@ -7,8 +8,8 @@ class QuestionExplorer extends Component {
     ListItems = () => {
         if(this.props.questions.length === 0) {
             return(
-                <div className={"question-explorer-list"} style={{fontSize: '1rem'}}>
-                    Lista pytań jest pusta
+                <div className={"question-explorer-list"} style={{fontSize: '1rem', marginTop: '30px'}}>
+                    {t('components.emptyQuestionList')}
                 </div>
             )
         }else{

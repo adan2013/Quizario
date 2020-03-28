@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import {Container, Row, Form, InputGroup, Button} from 'react-bootstrap';
+import {returnLetter} from "../../utilities";
+import {t} from 'react-switch-lang';
 import './QuestionEditor.css';
 
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
-import {returnLetter} from "../../utilities";
 
 class QuestionEditor extends Component {
 
@@ -36,7 +37,7 @@ class QuestionEditor extends Component {
     AnswerBox = ({answer}) => {
         return(
             <Row>
-                <div className={"question-editor-container-label"}>Odpowiedź {returnLetter(answer)}:</div>
+                <div className={"question-editor-container-label"}>{t('components.answer')} {returnLetter(answer)}:</div>
                 <InputGroup>
                     <Form.Control type={"text"}
                                   value={this.props.question.answers[answer]}
@@ -59,12 +60,12 @@ class QuestionEditor extends Component {
             return (
                 <Container fluid className={"question-editor-container"}>
                     <Row>
-                        <div className={"question-editor-container-label"}>Treść pytania:</div>
+                        <div className={"question-editor-container-label"}>{t('components.questionContent')}</div>
                         <Form.Control as={"textarea"}
                                       value={this.props.question.question}
                                       className={"editor-textarea"}
                                       onChange={(e) => this.updateQuestion(e.target.value)}
-                                      maxLength={"120"}/>
+                                      maxLength={"200"}/>
                     </Row>
                     <this.AnswerBox answer={0}/>
                     <this.AnswerBox answer={1}/>
@@ -75,7 +76,7 @@ class QuestionEditor extends Component {
         }else{
             return (
                 <div style={{margin: '80px auto 0 auto'}}>
-                    Wybierz pytanie z listy po lewej
+                    {t('components.chooseQuestion')}
                 </div>
             );
         }

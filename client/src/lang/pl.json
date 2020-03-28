@@ -15,6 +15,18 @@
     "player": "Tryb gracza",
     "error404": "Strona nie istnieje"
   },
+  "components": {
+    "no": "Lp.",
+    "nickname": "Nick gracza",
+    "points": "Liczba punktów",
+    "orderAlphabetically": "Alfabetycznie",
+    "orderPointsDESC": "Punkty malejąco",
+    "exportCSVFile": "Eksportuj do pliku CSV",
+    "emptyQuestionList": "Lista pytań jest pusta",
+    "answer": "Odpowiedź",
+    "questionContent": "Treść pytania:",
+    "chooseQuestion": "Wybierz pytanie z listy po lewej"
+  },
   "main": {
     "nickname": "Nick gracza",
     "accessCode": "6-cyfrowy kod dostępu",

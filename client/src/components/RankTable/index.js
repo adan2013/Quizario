@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import {Table} from 'react-bootstrap';
 import {Container, Row, Col, Button} from 'react-bootstrap';
 import LogicSwitch from "../LogicSwitch";
-import Downloader from 'react-file-download'
+import Downloader from 'react-file-download';
+import {t} from 'react-switch-lang';
 import './RankTable.css';
 
 class RankTable extends Component {
@@ -27,7 +28,7 @@ class RankTable extends Component {
 
     render() {
         if(this.props.data) {
-            let csv = [["Lp.", "Nick gracza", "Ilość punktów"]];
+            let csv = [[t('components.no'), t('components.nickname'), t('components.points')]];
             let data = this.props.data.slice();
             let no = 1;
             data.sort(this.state.byPoints ? this.sortByPoints : this.sortAlphabetically);
@@ -45,14 +46,15 @@ class RankTable extends Component {
                             <Row noGutters>
                                 <Col xs={6}>
                                     <LogicSwitch value={this.state.byPoints}
-                                                 offText={"Alfabetycznie"} onText={"Punkty malejąco"}
+                                                 offText={t('components.orderAlphabetically')}
+                                                 onText={t('components.orderPointsDESC')}
                                                  onChange={(val) => {this.setState({byPoints: val})}}/>
                                 </Col>
                                 <Col xs={6}>
                                     <Button variant={"secondary"} onClick={() => {
                                         Downloader(csvFile, 'quiz.csv');
                                     }}>
-                                        Export do pliku CSV
+                                        {t('components.exportCSVFile')}
                                     </Button>
                                 </Col>
                             </Row>
@@ -61,9 +63,9 @@ class RankTable extends Component {
                     <Table striped bordered>
                         <thead>
                         <tr>
-                            <th>Lp.</th>
-                            <th>Nick gracza</th>
-                            <th>Ilość punktów</th>
+                            <th>{t('components.no')}</th>
+                            <th>{t('components.nickname')}</th>
+                            <th>{t('components.points')}</th>
                         </tr>
                         </thead>
                         <tbody>
