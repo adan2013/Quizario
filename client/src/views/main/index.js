@@ -11,6 +11,7 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import EditIcon from '@material-ui/icons/Edit';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import PowerIcon from '@material-ui/icons/Power';
+import LanguageSwitch from "../../components/LanguageSwitch";
 
 class Main extends React.Component {
     constructor(props) {
@@ -87,8 +88,6 @@ class Main extends React.Component {
                                 }
 
                             </form>
-                        </Col>
-                        <Col xs={12}>
                             <ButtonGroup className={"main-footer-btn"}>
                                 <Button variant={"secondary"} onClick={() => this.props.history.push('/host')}>
                                     <AddCircleOutlineIcon fontSize={"large"}/><br/>
@@ -99,6 +98,7 @@ class Main extends React.Component {
                                     Edytor pytań
                                 </Button>
                             </ButtonGroup>
+                            <LanguageSwitch/>
                         </Col>
                     </Row>
                 </Container>
