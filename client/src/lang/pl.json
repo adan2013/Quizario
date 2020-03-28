@@ -80,5 +80,27 @@
     "quizCompleted": "Quiz zakończony!",
     "totalPoints": "Zdobyto punktów:",
     "place": "Zajęto miejsce nr:"
+  },
+  "editor": {
+    "exitMessage": "Na pewno chcesz opuścić edytor?",
+    "enterProjectName": "Podaj nazwę projektu lub zostaw puste pole:",
+    "exit": "Wyjdź",
+    "upload": "Wgraj",
+    "download": "Pobierz",
+    "moveUp": "Przesuń w górę",
+    "moveDown": "Przesuń w dół",
+    "delete": "Usuń",
+    "addHere": "Dodaj tutaj",
+    "addEnd": "Dodaj na końcu",
+    "smallDevice": "Rozdzielczość przeglądarki urządzenia jest zbyt mała, aby uruchomić edytor pytań!",
+    "warning": "Ostrzeżenie",
+    "noCancel": "Nie, anuluj",
+    "exitModal1": "Wykryto w projekcie niepobrane zmiany!",
+    "exitModal2": "Czy na pewno chcesz wyjść z edytora?",
+    "yesExit": "Tak, wyjdź",
+    "deleteModal": "Na pewno chcesz usunąć to pytanie?",
+    "yesDelete": "Tak, usuń",
+    "uploadModal": "Na pewno chcesz wczytać nowy projekt? W obecnym masz niezapisane zmiany!",
+    "yesUpload": "Tak, wczytaj"
   }
 }

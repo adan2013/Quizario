@@ -6,6 +6,7 @@ import QuestionExplorer from "../../components/QuestionExplorer";
 import QuestionEditor from "../../components/QuestionEditor";
 import Downloader from 'react-file-download'
 import {validateJson} from "../../utilities";
+import {t} from 'react-switch-lang';
 
 import CloseIcon from '@material-ui/icons/Close';
 import PublishIcon from '@material-ui/icons/Publish';
@@ -31,7 +32,7 @@ class Editor extends React.Component {
         window.addEventListener("beforeunload", (ev) =>
         {
             if(this.state.changed) {
-                return ev.returnValue = 'Na pewno chcesz opuścić edytor?';
+                return ev.returnValue = t('editor.exitMessage');
             }
         });
     }
@@ -79,14 +80,14 @@ class Editor extends React.Component {
                         workspace: [],
                         originalName: ''
                     });
-                    alert('Wykryto błędną strukturę pliku!');
+                    alert(t('general.badFile'));
                 }
             }catch(error) {
                 this.setState({
                     workspace: [],
                     originalName: ''
                 });
-                alert('Wykryto błędną składnię pliku JSON!');
+                alert(t('general.badJSON'));
             }
             this.inputFile.current.value = "";
         };
@@ -102,9 +103,9 @@ class Editor extends React.Component {
     downloadFile = () => {
         let name = this.state.originalName;
         if(name === '') {
-            name = prompt('Podaj nazwę projektu lub pozostaw pole puste:');
+            name = prompt(t('editor.enterProjectName'));
             if(name === '') {
-                name = 'question.json';
+                name = 'questions.json';
             }else{
                 name += '.json';
                 this.setState({originalName: name});
@@ -173,48 +174,48 @@ class Editor extends React.Component {
 
     topButtonsConfig = () => [
         {
-            text: 'Wyjdź',
+            text: t('editor.exit'),
             icon: <CloseIcon/>,
             click: this.exitButton
         },
         {
             customUpload: true,
-            text: 'Wgraj',
+            text: t('editor.upload'),
             icon: <PublishIcon/>,
             click: this.uploadFile
         },
         {
             variant: this.state.workspace.length === 0 || !this.state.changed ? null : 'success',
-            text: 'Pobierz',
+            text: t('editor.download'),
             icon: <GetAppIcon/>,
             click: this.downloadFile,
             disabled: this.state.workspace.length === 0 || !this.state.changed
         },
         {
-            text: 'Przesuń w górę',
+            text: t('editor.moveUp'),
             icon: <ArrowUpwardIcon/>,
             click: () => this.moveQuestion(-1),
             disabled: this.state.selectedIndex < 1
         },
         {
-            text: 'Przesuń w dół',
+            text: t('editor.moveDown'),
             icon: <ArrowDownwardIcon/>,
             click: () => this.moveQuestion(1),
             disabled: this.state.selectedIndex < 0 || this.state.selectedIndex + 1 === this.state.workspace.length
         },
         {
-            text: 'Usuń',
+            text: t('editor.delete'),
             icon: <DeleteForeverIcon/>,
             click: () =>this.deleteQuestion(false),
             disabled: this.state.selectedIndex < 0
         },
         {
-            text: 'Dodaj tutaj',
+            text: t('editor.addHere'),
             icon: <AddBoxIcon/>,
             click: () => this.addQuestion(true)
         },
         {
-            text: 'Dodaj na końcu',
+            text: t('editor.addEnd'),
             icon: <AddBoxIcon/>,
             click: () => this.addQuestion(false)
         }
@@ -235,7 +236,7 @@ class Editor extends React.Component {
         return(
             <CenterBox {...this.props}>
                 <div className={"message-box d-block d-sm-block d-md-none"}>
-                    Rozdzielczość przeglądarki urządzenia jest zbyt mała, aby uruchomić edytor pytań!
+                    {t('editor.smallDevice')}
                 </div>
                 <Container fluid className={"editor-container d-none d-sm-none d-md-block"}>
                     <Row style={{height: '100%'}}>
@@ -288,40 +289,40 @@ class Editor extends React.Component {
 
                 <Modal show={this.state.exitModal} onHide={() => this.setState({exitModal: false})}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Ostrzeżenie</Modal.Title>
+                        <Modal.Title>{t('editor.warning')}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <p>Wykryto w projekcie niepobrane zmiany!<br/>Czy na pewno chcesz wyjść z edytora?</p>
+                        <p>{t('editor.exitModal1')}<br/>{t('editor.exitModal2')}</p>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="danger" onClick={() => this.props.history.push('/')}>Tak, wyjdź</Button>
-                        <Button variant="secondary" onClick={() => this.setState({exitModal: false})}>Nie, anuluj</Button>
+                        <Button variant="danger" onClick={() => this.props.history.push('/')}>{t('editor.yesExit')}</Button>
+                        <Button variant="secondary" onClick={() => this.setState({exitModal: false})}>{t('editor.noCancel')}</Button>
                     </Modal.Footer>
                 </Modal>
 
                 <Modal show={this.state.deleteModal} onHide={() => this.setState({deleteModal: false})}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Ostrzeżenie</Modal.Title>
+                        <Modal.Title>{t('editor.warning')}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <p>Na pewno chcesz usunąć to pytanie?</p>
+                        <p>{t('editor.deleteModal')}</p>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="danger" onClick={() => this.deleteQuestion(true)}>Tak, usuń</Button>
-                        <Button variant="secondary" onClick={() => this.setState({deleteModal: false})}>Nie, anuluj</Button>
+                        <Button variant="danger" onClick={() => this.deleteQuestion(true)}>{t('editor.yesDelete')}</Button>
+                        <Button variant="secondary" onClick={() => this.setState({deleteModal: false})}>{t('editor.noCancel')}</Button>
                     </Modal.Footer>
                 </Modal>
 
                 <Modal show={this.state.uploadModal} onHide={this.cancelUpload}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Ostrzeżenie</Modal.Title>
+                        <Modal.Title>{t('editor.warning')}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <p>Na pewno chcesz wczytać nowy projekt? W obecnym masz niezapisane zmiany!</p>
+                        <p>{t('editor.uploadModal')}</p>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="danger" onClick={this.loadProject}>Tak, wczytaj</Button>
-                        <Button variant="secondary" onClick={this.cancelUpload}>Nie, anuluj</Button>
+                        <Button variant="danger" onClick={this.loadProject}>{t('editor.yesUpload')}</Button>
+                        <Button variant="secondary" onClick={this.cancelUpload}>{t('editor.noCancel')}</Button>
                     </Modal.Footer>
                 </Modal>
             </CenterBox>
