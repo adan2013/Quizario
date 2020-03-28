@@ -1,7 +1,9 @@
 {
   "general": {
     "error404": "Podana strona nie została znaleziona",
-    "return": "Powrót"
+    "return": "Powrót",
+    "cancel": "Anuluj",
+    "exit": "Wyjdź"
   },
   "routing": {
     "host": "Tryb gospodarza",
@@ -16,5 +18,23 @@
     "reconnect": "Powróć do ostatniej gry",
     "createNewGame": "Stwórz nową grę",
     "questionEditor": "Edytor pytań"
+  },
+  "player": {
+    "connecting": "Łączenie z pokojem...",
+    "nickName": "Nickname",
+    "isBusy": "jest już zajęty - wybierz inny!",
+    "roomWithNumber": "Pokój o numerze",
+    "notFound": "nie został znaleziony!",
+    "correctAnswer": "Odpowiedź poprawna! Gratulacje!",
+    "badAnswer": "Odpowiedź błędna",
+    "badAnswerCorrect": "Poprawną odpowiedzią było:",
+    "selectedAnswer": "Wybrano odpowiedź",
+    "waitForEnd": "Oczekuj na zakończenie odpowiadania...",
+    "connected": "Połączono z pokojem",
+    "waitForHost": "Obserwuj komunikaty na ekranie hosta...",
+    "chooseAnswer": "Odpowiedz na pytanie:",
+    "quizCompleted": "Quiz zakończony!",
+    "totalPoints": "Zdobyto punktów:",
+    "place": "Zajęto miejsce nr:"
   }
 }

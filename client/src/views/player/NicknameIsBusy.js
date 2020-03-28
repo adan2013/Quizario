@@ -1,15 +1,16 @@
 import React, {Component} from 'react';
 import CenterBox from "../../components/CenterBox";
+import {t} from "react-switch-lang";
 
 import WarningIcon from '@material-ui/icons/Warning';
 
 class NicknameIsBusy extends Component {
     render() {
         return (
-            <CenterBox logo cancel={"Powrót"} {...this.props}>
+            <CenterBox logo cancel={t('general.return')} {...this.props}>
                 <WarningIcon style={{fontSize: '4.5em'}}/>
                 <div className={"message-box"}>
-                    Nick "{this.props.game.playerName}" jest już zajęty - wybierz inny!
+                    {t('player.nickname')} "{this.props.game.playerName}" {t('player.isBusy')}
                 </div>
             </CenterBox>
         );

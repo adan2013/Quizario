@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import CenterBox from "../../components/CenterBox";
+import {t} from "react-switch-lang";
 
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn';
 
@@ -19,14 +20,14 @@ class Final extends Component {
             let totalPoints = stats[place].points;
             place++; // 0 > 1, 1 > 2 etc.
             return (
-                <CenterBox logo cancel={"Powrót"} roomHeader {...this.props}>
+                <CenterBox logo cancel={t('general.return')} roomHeader {...this.props}>
                     <AssignmentTurnedInIcon style={{fontSize: '4.5em'}}/>
                     <div className={"message-box"}>
-                        Quiz zakończony!<br/><br/>
-                        Zdobyto punktów:<br/>
+                        {t('player.quizCompleted')}<br/><br/>
+                        {t('player.totalPoints')}<br/>
                         {totalPoints}<br/>
                         <br/>
-                        Zajęto miejsce nr:<br/>
+                        {t('player.place')}<br/>
                         {place}
                     </div>
                 </CenterBox>
