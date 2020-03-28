@@ -3,7 +3,11 @@
     "error404": "Podana strona nie została znaleziona",
     "return": "Powrót",
     "cancel": "Anuluj",
-    "exit": "Wyjdź"
+    "exit": "Wyjdź",
+    "closeRoom": "Zamknij pokój",
+    "finishQuiz": "Zakończ quiz",
+    "badFile": "Wykryto błędną strukturę pliku!",
+    "badJSON": "Wykryto błędną składnię pliku JSON!"
   },
   "routing": {
     "host": "Tryb gospodarza",
@@ -18,6 +22,34 @@
     "reconnect": "Powróć do ostatniej gry",
     "createNewGame": "Stwórz nową grę",
     "questionEditor": "Edytor pytań"
+  },
+  "host": {
+    "quizTitle": "Tytuł quizu:",
+    "questionDB": "Baza pytań:",
+    "chooseFile": "Wybierz plik z pytaniami",
+    "questionEmpty": "Brak bazy pytań",
+    "questionLoaded": "Załadowano pytań:",
+    "questionOrder": "Kolejność pytań:",
+    "orderNormal": "Zwykła",
+    "orderRandom": "Losowa",
+    "timeLimit": "Limit czasu:",
+    "questionLimit": "Limit ilości pytań:",
+    "offText": "Wył.",
+    "createRoom": "Utwórz pokój",
+    "connecting": "Łączenie z serwerem...",
+    "goToAddress": "Wejdź na adres:",
+    "enterCode": "i wprowadź poniższy kod dostępu:",
+    "scanQR": "lub zeskanuj kod QR znajdujący się obok",
+    "connectedPlayers": "Liczba podłączonych graczy:",
+    "startQuiz": "Uruchom quiz",
+    "questionNo": "Pytanie:",
+    "answered:": "Odpowiedziało:",
+    "correct": "Poprawna",
+    "stats": "Statystyki",
+    "ranking": "Ranking",
+    "stop": "Stop",
+    "next": "Następne",
+    "quizResults": "Wyniki quizu"
   },
   "player": {
     "connecting": "Łączenie z pokojem...",

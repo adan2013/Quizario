@@ -6,6 +6,7 @@ import './Creating.css';
 import TimePicker from "../../components/TimePicker";
 import NumberPicker from "../../components/NumberPicker";
 import LogicSwitch from "../../components/LogicSwitch";
+import {t} from 'react-switch-lang';
 
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import PublishIcon from '@material-ui/icons/Publish';
@@ -65,13 +66,13 @@ class Creating extends Component {
                     this.setState({
                         questions: []
                     });
-                    alert('Wykryto błędną strukturę pliku!');
+                    alert(t('general.badFile'));
                 }
             }catch(error) {
                 this.setState({
                     questions: []
                 });
-                alert('Wykryto błędną składnię pliku JSON!');
+                alert(t('general.badJSON'));
             }
             this.inputFile.current.value = "";
         };
@@ -82,48 +83,48 @@ class Creating extends Component {
 
     render() {
         return (
-            <CenterBox logo cancel={"Powrót"} {...this.props}>
+            <CenterBox logo cancel={t('general.return')} {...this.props}>
                 <div className={"message-box"}>
                     <form>
                         <Container>
                             <Row>
                                 <Col md={6} className={"vcenter"}>
                                     <div>
-                                        <div className={"creating-label"}>Tytuł quizu:</div>
+                                        <div className={"creating-label"}>{t('host.quizTitle')}</div>
                                         <Form.Control type={"text"}
                                                       value={this.state.title}
                                                       className={"creating-textbox"}
                                                       onChange={(e) => this.setState({title: e.target.value.trim()})}
                                                       maxLength={"30"}/>
-                                        <div className={"creating-label"}>Baza pytań:</div>
+                                        <div className={"creating-label"}>{t('host.questionDB')}</div>
                                         <span className={"btn btn-secondary btn-file"}>
-                                            <PublishIcon/> Wybierz plik z pytaniami
+                                            <PublishIcon/> {t('host.chooseFile')}
                                             <input type={"file"} accept={"application/json"} onChange={this.uploadFile} ref={this.inputFile}/>
                                         </span>
                                         <div className={"questions-info"}>
                                             {
                                                 this.state.questions.length === 0
                                                 ?
-                                                    'Brak bazy pytań'
+                                                    t('host.questionEmpty')
                                                     :
-                                                    'Załadowano pytań: ' + this.state.questions.length
+                                                    t('host.questionLoaded') + ' ' + this.state.questions.length
                                             }
                                         </div>
                                     </div>
                                 </Col>
                                 <Col md={6} className={"vcenter"}>
                                     <div>
-                                        <div className={"creating-label"}>Kolejność pytań:</div>
+                                        <div className={"creating-label"}>{t('host.questionOrder')}</div>
                                         <LogicSwitch value={this.state.randomOrder}
-                                                     offText={"Zwykła"} onText={"Losowa"}
+                                                     offText={t('host.orderNormal')} onText={t('host.orderRandom')}
                                                      onChange={(e) => this.setState({randomOrder: e})}/>
-                                        <div className={"creating-label"}>Limit czasu:</div>
+                                        <div className={"creating-label"}>{t('host.timeLimit')}</div>
                                         <TimePicker value={this.state.timeLimit}
-                                                    min={0} max={300} zeroText={"Wył."}
+                                                    min={0} max={300} zeroText={t('host.offText')}
                                                     onChange={(e) => this.setState({timeLimit: e})}/>
-                                        <div className={"creating-label"}>Limit ilości pytań:</div>
+                                        <div className={"creating-label"}>{t('host.questionLimit')}</div>
                                         <NumberPicker value={this.state.questionLimit}
-                                                      min={0} max={500} zeroText={"Wył."}
+                                                      min={0} max={500} zeroText={t('host.offText')}
                                                       onChange={(e) => this.setState({questionLimit: e})}/>
                                     </div>
                                 </Col>
@@ -135,7 +136,7 @@ class Creating extends Component {
                                 disabled={this.state.title.trim() === '' || this.state.questions.length === 0}
                                 className={"creating-button"}>
                             <PlayCircleOutlineIcon/><br/>
-                            Utwórz pokój
+                            {t('host.createRoom')}
                         </Button>
                     </form>
                 </div>

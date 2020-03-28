@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import CenterBox from "../../components/CenterBox";
 import {Button, Container, Col, Row, ButtonGroup, ProgressBar} from "react-bootstrap";
+import {t} from 'react-switch-lang';
 import './Question.css'
 import {
     answerStatsRequest,
@@ -59,7 +60,7 @@ class Question extends Component {
                 <Row noGutters>
                     <Col md={{span: 4, order: 1}} sm={{span: 6, order: 2}} xs={{span: 6, order: 2}}>
                         <div className={"question-counter"}>
-                            Pytanie: {this.props.questionIndex+1}/{this.props.lastIndexNumber}
+                            {t('host.questionNo')} {this.props.questionIndex+1}/{this.props.lastIndexNumber}
                         </div>
                     </Col>
                     <Col md={{span: 4, order: 2}} sm={{span: 12, order: 1}} xs={{span: 12, order: 1}}>
@@ -69,7 +70,7 @@ class Question extends Component {
                     </Col>
                     <Col md={{span: 4, order: 3}} sm={{span: 6, order: 3}} xs={{span: 6, order: 3}}>
                         <div className={"question-answers-counter"}>
-                            Odpowiedziało: {this.props.answerCount}
+                            {t('host.answered')} {this.props.answerCount}
                         </div>
                     </Col>
                 </Row>
@@ -117,24 +118,24 @@ class Question extends Component {
                     <Button variant={"secondary"} disabled={this.props.questionIsOpen || this.props.questionTab === 1} onClick={() => {
                         this.props.changeTab(1)
                     }}>
-                        <CheckBoxIcon fontSize={"large"}/><br/>Poprawna
+                        <CheckBoxIcon fontSize={"large"}/><br/>{t('host.correct')}
                     </Button>
                     <Button variant={"secondary"} disabled={this.props.questionIsOpen || this.props.questionTab === 2} onClick={() => {
                         this.props.changeTab(2);
                         this.props.socket.emit(answerStatsRequest, this.props.game.hostingRoom.roomCode);
                     }}>
-                        <AssessmentIcon fontSize={"large"}/><br/>Statystyki
+                        <AssessmentIcon fontSize={"large"}/><br/>{t('host.stats')}
                     </Button>
                     <Button variant={"secondary"} disabled={this.props.questionIsOpen || this.props.questionTab === 3} onClick={() => {
                         this.props.changeTab(3);
                         this.props.socket.emit(generalRankingRequest, this.props.game.hostingRoom.roomCode);
                     }}>
-                        <ViewListIcon fontSize={"large"}/><br/>Ranking
+                        <ViewListIcon fontSize={"large"}/><br/>{t('host.ranking')}
                     </Button>
                     <Button variant={"secondary"} disabled={this.props.isLastQuestion && !this.props.questionIsOpen} onClick={this.nextButton}>
                         {this.props.questionIsOpen ? <PanToolIcon fontSize={"large"}/> : <ArrowForwardIcon/>}
                         <br/>
-                        {this.props.questionIsOpen ? 'Stop' : 'Następne'}
+                        {this.props.questionIsOpen ? t('host.stop') : t('host.next')}
                     </Button>
                 </ButtonGroup>
             </div>
@@ -154,7 +155,7 @@ class Question extends Component {
 
     render() {
         return (
-            <CenterBox logo cancel={"Zakończ quiz"} closeRoomSignal roomHeader {...this.props}>
+            <CenterBox logo cancel={t('general.finishQuiz')} closeRoomSignal roomHeader {...this.props}>
                 <div className={"message-box"}>
                     <Container fluid style={this.props.questionTab === 3 ? {display: 'none'} : {}}>
                         <this.QuestionGrid/>

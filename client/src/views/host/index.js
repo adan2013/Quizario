@@ -160,7 +160,7 @@ class Host extends React.Component {
                 return(<Final {...this.props}
                               generalRanking={this.state.generalRanking}/>);
             default:
-                return(<span>BRAK WIDOKU</span>);
+                return(<span>NOT FOUND</span>);
         }
     }
 }
