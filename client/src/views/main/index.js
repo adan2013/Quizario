@@ -4,6 +4,7 @@ import {switchStateAC, setPlayerConfigAC} from '../../actions/game'
 import {Row, Col, Container, Button, ButtonGroup, Form} from 'react-bootstrap'
 import CenterBox from "../../components/CenterBox";
 import {reconnectModeIsAvailable, getReconnectRoom, getReconnectPlayer} from '../../connection/reconnect'
+import {t} from 'react-switch-lang'
 import './main.css'
 
 import logo from '../../assets/logo.svg'
@@ -64,26 +65,26 @@ class Main extends React.Component {
                                 <Form.Control type={"text"}
                                               value={this.state.playerName}
                                               onChange={(e) => this.setState({playerName: e.target.value})}
-                                              placeholder={"Nick gracza"}
-                                              maxLength={"25"}
+                                              placeholder={t('main.nickname')}
+                                              maxLength={"40"}
                                               className={"main-textbox"}/>
                                 <Form.Control type={"number"}
                                               value={this.state.roomCode}
                                               onChange={this.changeRoomCode}
-                                              placeholder={"6-cyfrowy kod dostępu"}
+                                              placeholder={t('main.accessCode')}
                                               className={"main-textbox"}/>
                                 <Button type={"submit"}
                                         variant={"secondary"}
                                         onClick={this.startGame}
                                         disabled={this.state.roomCode.length !== 6 || this.state.playerName === ''}>
-                                    <PlayCircleOutlineIcon/> Dołącz do gry
+                                    <PlayCircleOutlineIcon/> {t('main.joinToGame')}
                                 </Button>
 
                                 {reconnectModeIsAvailable() &&
                                 <Button type={"submit"}
                                         variant={"warning"}
                                         onClick={this.reconnect} className={"reconnect-btn"}>
-                                    <PowerIcon/> Powróć do ostatniej gry
+                                    <PowerIcon/> {t('main.reconnect')}
                                 </Button>
                                 }
 
@@ -91,11 +92,11 @@ class Main extends React.Component {
                             <ButtonGroup className={"main-footer-btn"}>
                                 <Button variant={"secondary"} onClick={() => this.props.history.push('/host')}>
                                     <AddCircleOutlineIcon fontSize={"large"}/><br/>
-                                    Stwórz nową grę
+                                    {t('main.createNewGame')}
                                 </Button>
                                 <Button variant={"secondary"} onClick={() => this.props.history.push('/editor')}>
                                     <EditIcon fontSize={"large"}/><br/>
-                                    Edytor pytań
+                                    {t('main.questionEditor')}
                                 </Button>
                             </ButtonGroup>
                             <LanguageSwitch/>

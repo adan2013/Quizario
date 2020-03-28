@@ -1,1 +1,20 @@
-{}
+{
+  "general": {
+    "error404": "Podana strona nie została znaleziona",
+    "return": "Powrót"
+  },
+  "routing": {
+    "host": "Tryb gospodarza",
+    "editor": "Edytor pytań",
+    "player": "Tryb gracza",
+    "error404": "Strona nie istnieje"
+  },
+  "main": {
+    "nickname": "Nick gracza",
+    "accessCode": "6-cyfrowy kod dostępu",
+    "joinToGame": "Dołącz do gry",
+    "reconnect": "Powróć do ostatniej gry",
+    "createNewGame": "Stwórz nową grę",
+    "questionEditor": "Edytor pytań"
+  }
+}
