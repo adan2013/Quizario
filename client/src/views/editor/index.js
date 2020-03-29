@@ -29,12 +29,6 @@ class Editor extends React.Component {
             uploadModal: false
         };
         this.inputFile = React.createRef();
-        window.addEventListener("beforeunload", (ev) =>
-        {
-            if(this.state.changed) {
-                return ev.returnValue = t('editor.exitMessage');
-            }
-        });
     }
 
     changeSelecion = (index) => {
