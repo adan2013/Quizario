@@ -15,7 +15,7 @@ const gameCompleted = 'GAME_COMPLETED';
 
 const addToRoom = 'ADD_TO_ROOM';
 const joinedToRoom = 'JOINED_TO_ROOM';
-const nicknameIsBusy = 'NICKNAME_IS_BUSY';
+const nicknameIsTaken = 'NICKNAME_IS_TAKEN';
 const roomNotFound = 'ROOM_NOT_FOUND';
 
 const newQuestion = 'NEW_QUESTION';
@@ -136,11 +136,11 @@ io.on('connection', socket => {
     socket.on(addToRoom, (roomCode, playerName, reconnectMode) => {
         const theRoom = getRoomObject(roomCode);
         if(theRoom) {
-            const isBusy = theRoom.players.findIndex(item => {
+            const isTaken = theRoom.players.findIndex(item => {
                 return item.nickname === playerName;
             });
             if(reconnectMode) {
-                if(isBusy >= 0) {
+                if(isTaken >= 0) {
                     socket.join(roomCode);
                     socket.emit(joinedToRoom, theRoom);
                     const userCount = theRoom.players.length;
@@ -150,9 +150,9 @@ io.on('connection', socket => {
                     console.log(socket.id + ' > user not found! Reconnect mode error in room with code ' + roomCode);
                 }
             }else{
-                if(isBusy >= 0) {
-                    socket.emit(nicknameIsBusy);
-                    console.log(socket.id + ' > in room ' + roomCode + ' nickname "' + playerName + '" is already busy! Player request rejected!');
+                if(isTaken >= 0) {
+                    socket.emit(nicknameIsTaken);
+                    console.log(socket.id + ' > in room ' + roomCode + ' nickname "' + playerName + '" is already taken! Player request rejected!');
                 }else{
                     theRoom.players.push({
                         nickname: playerName,
@@ -163,7 +163,7 @@ io.on('connection', socket => {
                     const userCount = theRoom.players.length;
                     let host = getHostSocket(roomCode);
                     if(host) host.emit(userCountUpdate, userCount);
-                    console.log(socket.id + ' > user joined to room ' + roomCode + ' with nickname "' + playerName + '" (players in room: ' + userCount + ')');
+                    console.log(socket.id + ' > user joined to the room ' + roomCode + ' with nickname "' + playerName + '" (players in room: ' + userCount + ')');
                 }
             }
         }else{

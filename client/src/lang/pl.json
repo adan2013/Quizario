@@ -30,7 +30,7 @@
   "main": {
     "nickname": "Nick gracza",
     "accessCode": "6-cyfrowy kod dostępu",
-    "joinToGame": "Dołącz do gry",
+    "joinTheGame": "Dołącz do gry",
     "reconnect": "Powróć do ostatniej gry",
     "createNewGame": "Stwórz nową grę",
     "questionEditor": "Edytor pytań"
@@ -38,9 +38,9 @@
   "host": {
     "quizTitle": "Tytuł quizu:",
     "questionDB": "Baza pytań:",
-    "chooseFile": "Wybierz plik z pytaniami",
+    "chooseFile": "Wybierz plik",
     "questionEmpty": "Brak bazy pytań",
-    "questionLoaded": "Załadowano pytań:",
+    "questionLoaded": "Wykryto pytań:",
     "questionOrder": "Kolejność pytań:",
     "orderNormal": "Zwykła",
     "orderRandom": "Losowa",
@@ -55,7 +55,7 @@
     "connectedPlayers": "Liczba podłączonych graczy:",
     "startQuiz": "Uruchom quiz",
     "questionNo": "Pytanie:",
-    "answered:": "Odpowiedziało:",
+    "answered": "Odpowiedziało:",
     "correct": "Poprawna",
     "stats": "Statystyki",
     "ranking": "Ranking",
@@ -65,13 +65,13 @@
   },
   "player": {
     "connecting": "Łączenie z pokojem...",
-    "nickName": "Nickname",
-    "isBusy": "jest już zajęty - wybierz inny!",
+    "nickname": "Nick",
+    "isTaken": "jest już zajęty - wybierz inny!",
     "roomWithNumber": "Pokój o numerze",
     "notFound": "nie został znaleziony!",
     "correctAnswer": "Odpowiedź poprawna! Gratulacje!",
     "badAnswer": "Odpowiedź błędna",
-    "badAnswerCorrect": "Poprawną odpowiedzią było:",
+    "badAnswerCorrect": "Poprawną odpowiedzią jest:",
     "selectedAnswer": "Wybrano odpowiedź",
     "waitForEnd": "Oczekuj na zakończenie odpowiadania...",
     "connected": "Połączono z pokojem",
@@ -82,7 +82,6 @@
     "place": "Zajęto miejsce nr:"
   },
   "editor": {
-    "exitMessage": "Na pewno chcesz opuścić edytor?",
     "enterProjectName": "Podaj nazwę projektu lub zostaw puste pole:",
     "exit": "Wyjdź",
     "upload": "Wgraj",
@@ -92,7 +91,7 @@
     "delete": "Usuń",
     "addHere": "Dodaj tutaj",
     "addEnd": "Dodaj na końcu",
-    "smallDevice": "Rozdzielczość przeglądarki urządzenia jest zbyt mała, aby uruchomić edytor pytań!",
+    "smallDevice": "Rozdzielczość przeglądarki jest zbyt mała, aby uruchomić edytor pytań!",
     "warning": "Ostrzeżenie",
     "noCancel": "Nie, anuluj",
     "exitModal1": "Wykryto w projekcie niepobrane zmiany!",

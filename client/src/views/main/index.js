@@ -77,7 +77,7 @@ class Main extends React.Component {
                                         variant={"secondary"}
                                         onClick={this.startGame}
                                         disabled={this.state.roomCode.length !== 6 || this.state.playerName === ''}>
-                                    <PlayCircleOutlineIcon/> {t('main.joinToGame')}
+                                    <PlayCircleOutlineIcon/> {t('main.joinTheGame')}
                                 </Button>
 
                                 {reconnectModeIsAvailable() &&

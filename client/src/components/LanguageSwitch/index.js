@@ -7,7 +7,7 @@ class LanguageSwitch extends Component {
     render() {
         return (
             <Dropdown drop={"up"}>
-                <Dropdown.Toggle variant={"secondary"}> Switch language: {getLanguage()} </Dropdown.Toggle>
+                <Dropdown.Toggle variant={"secondary"}> Language: {getLanguage()} </Dropdown.Toggle>
                 <Dropdown.Menu>
                     {
                         languages.map(item => {

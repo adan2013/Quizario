@@ -4,7 +4,7 @@ import {
     server,
     addToRoom,
     roomNotFound,
-    nicknameIsBusy,
+    nicknameIsTaken,
     joinedToRoom,
     answersOpen,
     answersClose,
@@ -14,7 +14,7 @@ import {
 import {setHostingRoomAC, switchStateAC} from "../../actions/game";
 import {connect} from "react-redux";
 import LoadingRoom from "./LoadingRoom";
-import NicknameIsBusy from "./NicknameIsBusy";
+import NicknameIsTaken from "./NicknameIsTaken";
 import RoomNotFound from "./RoomNotFound";
 import Waiting from "./Waiting";
 import Question from "./Question";
@@ -42,8 +42,8 @@ class Player extends React.Component {
                 this.socket.emit(addToRoom, this.props.game.roomCode, this.props.game.playerName, this.props.game.reconnectMode);
             });
 
-            this.socket.on(nicknameIsBusy, () => {
-                this.props.switchState('NICKNAME_IS_BUSY');
+            this.socket.on(nicknameIsTaken, () => {
+                this.props.switchState('NICKNAME_IS_TAKEN');
                 disableReconnectMode();
             });
 
@@ -100,8 +100,8 @@ class Player extends React.Component {
         switch(this.props.game.state) {
             case 'LOADING_ROOM':
                 return(<LoadingRoom {...this.props}/>);
-            case 'NICKNAME_IS_BUSY':
-                return(<NicknameIsBusy {...this.props}/>);
+            case 'NICKNAME_IS_TAKEN':
+                return(<NicknameIsTaken {...this.props}/>);
             case 'ROOM_NOT_FOUND':
                 return(<RoomNotFound {...this.props}/>);
             case 'WAITING':
