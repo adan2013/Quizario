@@ -4,6 +4,7 @@ import {Container, Col, Row, Button} from 'react-bootstrap'
 import {answerSelected} from "../../connection/config";
 import RemoteTimer from "../../components/Timer/RemoteTimer";
 import {t} from "react-switch-lang";
+import {v_waiting} from "./views";
 import './Question.css'
 
 import answerA from '../../assets/answerA.svg';
@@ -53,7 +54,7 @@ class Question extends Component {
         if(this.props.question) {
             this.props.selected(number);
             this.props.socket.emit(answerSelected, this.props.game.roomCode, this.props.game.playerName, number);
-            this.props.switchState('WAITING');
+            this.props.switchState(v_waiting);
         }
     };
 

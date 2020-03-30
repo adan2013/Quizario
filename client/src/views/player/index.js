@@ -20,6 +20,7 @@ import Waiting from "./Waiting";
 import Question from "./Question";
 import Final from "./Final";
 import {disableReconnectMode, enableReconnectMode} from "../../connection/reconnect";
+import {v_loadingRoom, v_nicknameIsTaken, v_roomNotFound, v_waiting, v_question, v_final} from './views'
 
 class Player extends React.Component {
     constructor(props) {
@@ -33,7 +34,7 @@ class Player extends React.Component {
     }
 
     componentDidMount() {
-        this.props.switchState('LOADING_ROOM');
+        this.props.switchState(v_loadingRoom);
         if(this.props.game.roomCode && this.props.game.playerName) {
 
             this.socket = socketIOClient(server);
@@ -43,18 +44,18 @@ class Player extends React.Component {
             });
 
             this.socket.on(nicknameIsTaken, () => {
-                this.props.switchState('NICKNAME_IS_TAKEN');
+                this.props.switchState(v_nicknameIsTaken);
                 disableReconnectMode();
             });
 
             this.socket.on(roomNotFound, () => {
-                this.props.switchState('ROOM_NOT_FOUND');
+                this.props.switchState(v_roomNotFound);
                 disableReconnectMode();
             });
 
             this.socket.on(joinedToRoom, (roomObject) => {
                 this.props.setHostingRoom(roomObject);
-                this.props.switchState('WAITING');
+                this.props.switchState(v_waiting);
                 enableReconnectMode(this.props.game.roomCode, this.props.game.playerName);
             });
 
@@ -65,12 +66,12 @@ class Player extends React.Component {
                     correctAnswer: null,
                     timerValue: this.props.game.hostingRoom.timeLimit
                 });
-                this.props.switchState('QUESTION');
+                this.props.switchState(v_question);
             });
 
             this.socket.on(answersClose, question => {
                 this.setState({question: question, correctAnswer: question.correct});
-                this.props.switchState('WAITING');
+                this.props.switchState(v_waiting);
             });
 
             this.socket.on(timerSync, value => {
@@ -79,7 +80,7 @@ class Player extends React.Component {
 
             this.socket.on(gameCompleted, stats => {
                 this.setState({stats: stats});
-                this.props.switchState('FINAL');
+                this.props.switchState(v_final);
                 disableReconnectMode();
             });
 
@@ -98,23 +99,23 @@ class Player extends React.Component {
 
     render() {
         switch(this.props.game.state) {
-            case 'LOADING_ROOM':
+            case v_loadingRoom:
                 return(<LoadingRoom {...this.props}/>);
-            case 'NICKNAME_IS_TAKEN':
+            case v_nicknameIsTaken:
                 return(<NicknameIsTaken {...this.props}/>);
-            case 'ROOM_NOT_FOUND':
+            case v_roomNotFound:
                 return(<RoomNotFound {...this.props}/>);
-            case 'WAITING':
+            case v_waiting:
                 return(<Waiting {...this.props}
                                 selectedAnswer={this.state.selectedAnswer}
                                 correctAnswer={this.state.correctAnswer}/>);
-            case 'QUESTION':
+            case v_question:
                 return(<Question {...this.props}
                                  socket={this.socket}
                                  question={this.state.question}
                                  selected={this.selected}
                                  timer={this.state.timerValue}/>);
-            case 'FINAL':
+            case v_final:
                 return(<Final {...this.props}
                               stats={this.state.stats}/>);
             default:

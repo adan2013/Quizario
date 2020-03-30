@@ -11,6 +11,7 @@ import {t} from 'react-switch-lang';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import PublishIcon from '@material-ui/icons/Publish';
 import {validateJson} from "../../utilities";
+import {v_waitingForCode} from "./views";
 
 class Creating extends Component {
     constructor(props) {
@@ -48,7 +49,7 @@ class Creating extends Component {
         if(this.state.randomOrder) this.shuffle(q);
         this.props.questionList(q);
         this.props.setHostingRoom(data);
-        this.props.switchState('WAITING_FOR_CODE');
+        this.props.switchState(v_waitingForCode);
         this.props.socket.emit(createNewRoom, data);
     };
 

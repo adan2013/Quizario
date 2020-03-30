@@ -13,6 +13,7 @@ import {
     generalRankingResponse,
     gameCompleted
 } from "../../connection/config";
+import {v_creating, v_waitingForCode, v_waitingForStart, v_question, v_final} from './views';
 
 import Creating from "./Creating";
 import WaitingForCode from "./WaitingForCode";
@@ -36,13 +37,13 @@ class Host extends React.Component {
     }
 
     componentDidMount() {
-        this.props.switchState('CREATING');
+        this.props.switchState(v_creating);
 
         this.socket = socketIOClient(server);
 
         this.socket.on(roomCreated, (code) => {
             this.props.setHostingRoom({...this.props.game.hostingRoom, roomCode: code});
-            this.props.switchState('WAITING_FOR_START');
+            this.props.switchState(v_waitingForStart);
         });
 
         this.socket.on(userCountUpdate, (count) => {
@@ -63,7 +64,7 @@ class Host extends React.Component {
 
         this.socket.on(gameCompleted, (stats) => {
             this.setState({generalRanking: stats});
-            this.props.switchState('FINAL');
+            this.props.switchState(v_final);
         });
     }
 
@@ -87,7 +88,7 @@ class Host extends React.Component {
             answerCount: 0,
             questionTab: 0
         });
-        this.props.switchState('QUESTION');
+        this.props.switchState(v_question);
         this.socket.emit(newQuestion, this.props.game.hostingRoom.roomCode, this.state.questions[index]);
     };
 
@@ -131,18 +132,18 @@ class Host extends React.Component {
 
     render() {
         switch(this.props.game.state) {
-            case 'CREATING':
+            case v_creating:
                 return(<Creating {...this.props}
                                  socket={this.socket}
                                  questionList={(q) => this.setState({questions: q})}/>);
-            case 'WAITING_FOR_CODE':
+            case v_waitingForCode:
                 return(<WaitingForCode {...this.props}/>);
-            case 'WAITING_FOR_START':
+            case v_waitingForStart:
                 return(<WaitingForStart {...this.props}
                                         socket={this.socket}
                                         nextQuestion={(i) => this.nextQuestion(i)}
                                         connectedUsers={this.state.connectedUsers}/>);
-            case 'QUESTION':
+            case v_question:
                 return(<Question {...this.props}
                                  socket={this.socket}
                                  answerCount={this.state.answerCount}
@@ -156,7 +157,7 @@ class Host extends React.Component {
                                  nextButton={this.nextButton}
                                  answerStats={this.state.answerStats}
                                  generalRanking={this.state.generalRanking}/>);
-            case 'FINAL':
+            case v_final:
                 return(<Final {...this.props}
                               generalRanking={this.state.generalRanking}/>);
             default:
