@@ -40,7 +40,7 @@ class Creating extends Component {
 
     createRoom = () => {
         const data = {
-            title: this.state.title,
+            title: this.state.title.trim(),
             timeLimit: this.state.timeLimit,
             questionLimit: this.state.questionLimit,
             randomOrder: this.state.randomOrder
@@ -95,7 +95,7 @@ class Creating extends Component {
                                         <Form.Control type={"text"}
                                                       value={this.state.title}
                                                       className={"creating-textbox"}
-                                                      onChange={(e) => this.setState({title: e.target.value.trim()})}
+                                                      onChange={(e) => this.setState({title: e.target.value})}
                                                       maxLength={"30"}/>
                                         <div className={"creating-label"}>{t('host.questionDB')}</div>
                                         <span className={"btn btn-secondary btn-file"}>
