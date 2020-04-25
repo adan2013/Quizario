@@ -24,7 +24,7 @@ In this configuration the application works only on one computer. If you enter h
 
 If your device still can't connect to the server, try temporarily disabling antivirus and/or firewall on your computer.
 
-## Functions
+## Features
 * playing in many rooms at the same time
 * player results statistics with export to CSV file
 * built-in question editor
